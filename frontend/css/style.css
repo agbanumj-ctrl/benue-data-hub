@@ -1,0 +1,766 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #ffffff;
+    color: #1f2937;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    width: 90%;
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    min-height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.logo img {
+    width: 90px;
+    height: 65px;
+    object-fit: contain;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav a {
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+    transition: 0.3s;
+}
+
+.nav a:hover {
+    color: #166534;
+}
+
+.login-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: #166534;
+    color: #ffffff !important;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    padding: 90px 0;
+    background: linear-gradient(135deg, #f0fdf4, #ffffff);
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    align-items: center;
+    gap: 60px;
+}
+
+.eyebrow {
+    color: #166534;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+}
+
+.hero h1 {
+    font-size: 56px;
+    line-height: 1.1;
+    margin-bottom: 22px;
+    color: #111827;
+}
+
+.hero h1 span {
+    color: #166534;
+}
+
+.hero-description {
+    max-width: 600px;
+    font-size: 18px;
+    color: #4b5563;
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.primary-btn,
+.secondary-btn {
+    display: inline-block;
+    padding: 13px 23px;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.primary-btn {
+    background: #166534;
+    color: #ffffff;
+}
+
+.primary-btn:hover {
+    background: #14532d;
+}
+
+.secondary-btn {
+    border: 1px solid #166534;
+    color: #166534;
+    background: #ffffff;
+}
+
+.secondary-btn:hover {
+    background: #f0fdf4;
+}
+
+
+/* HERO CARD */
+
+.hero-card {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.card-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.hero-card h2 {
+    margin-bottom: 10px;
+    color: #111827;
+}
+
+.hero-card p {
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+.service-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f0fdf4;
+    color: #166534;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #16a34a;
+}
+
+
+/* =========================
+   SECTIONS
+========================= */
+
+.services-preview,
+.why-section {
+    padding: 85px 0;
+}
+
+.section-heading {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 45px;
+}
+
+.section-heading h2 {
+    font-size: 36px;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.section-heading p:last-child {
+    color: #6b7280;
+}
+
+
+/* =========================
+   SERVICE CARDS
+========================= */
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.service-card {
+    padding: 30px;
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    background: #ffffff;
+    transition: 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.service-icon {
+    font-size: 38px;
+    margin-bottom: 15px;
+}
+
+.service-card h3 {
+    margin-bottom: 10px;
+    color: #111827;
+}
+
+.service-card p {
+    color: #6b7280;
+}
+
+.center-button {
+    text-align: center;
+    margin-top: 35px;
+}
+
+
+/* =========================
+   WHY SECTION
+========================= */
+
+.why-section {
+    background: #f9fafb;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.feature {
+    text-align: center;
+    padding: 25px;
+}
+
+.feature span {
+    font-size: 35px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.feature h3 {
+    margin-bottom: 8px;
+}
+
+.feature p {
+    color: #6b7280;
+}
+
+
+/* =========================
+   CTA
+========================= */
+
+.cta-section {
+    padding: 80px 0;
+    background: #166534;
+    color: #ffffff;
+}
+
+.cta-content {
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+.cta-content p {
+    margin-bottom: 25px;
+}
+
+.cta-content .primary-btn {
+    background: #ffffff;
+    color: #166534;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    background: #111827;
+    color: #ffffff;
+}
+
+.footer-content {
+    padding: 50px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.footer h3 {
+    margin-bottom: 8px;
+}
+
+.footer p {
+    color: #d1d5db;
+}
+
+.powered {
+    margin-top: 12px;
+    font-weight: 700;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.footer-links a {
+    color: #d1d5db;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 18px;
+    border-top: 1px solid #374151;
+}
+
+.footer-bottom p {
+    font-size: 13px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 800px) {
+
+    .nav-container {
+        flex-direction: column;
+        padding: 15px 0;
+    }
+
+    .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .hero {
+        padding: 60px 0;
+    }
+
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 35px;
+    }
+
+    .hero h1 {
+        font-size: 42px;
+    }
+
+    .service-grid,
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        flex-direction: column;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .container {
+        width: 92%;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+    }
+
+    .section-heading h2 {
+        font-size: 30px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .hero-buttons a {
+        text-align: center;
+    }
+}
+/* =========================
+   AUTH / LOGIN
+========================= */
+
+.auth-section {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 70px 20px;
+    background: linear-gradient(135deg, #f0fdf4, #ffffff);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.auth-heading {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-heading h1 {
+    font-size: 32px;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.auth-heading p:last-child {
+    color: #6b7280;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #166534;
+    box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.1);
+}
+
+.auth-btn {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #6b7280;
+}
+
+.auth-footer a {
+    color: #166534;
+    font-weight: 700;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+/* =========================
+   REGISTER PAGE
+========================= */
+
+.register-section {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 70px 20px;
+    background: linear-gradient(135deg, #f0fdf4, #ffffff);
+}
+
+.register-card {
+    width: 100%;
+    max-width: 500px;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.register-heading {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.register-heading h1 {
+    font-size: 32px;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.register-heading p:last-child {
+    color: #6b7280;
+}
+
+.register-btn {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.register-footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #6b7280;
+}
+
+.register-footer a {
+    color: #166534;
+    font-weight: 700;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}
+/* =========================
+   SERVICES PAGE
+========================= */
+
+.services-page {
+    min-height: 75vh;
+    padding: 80px 0;
+    background: #ffffff;
+}
+
+.services-page .section-heading h1 {
+    font-size: 42px;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.services-page .service-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.services-page .service-card .secondary-btn {
+    margin-top: 20px;
+}
+
+.services-page .service-card p {
+    margin-bottom: 0;
+}
+/* =========================
+   VENDOR PAGE
+========================= */
+
+.vendor-page {
+    min-height: 75vh;
+    padding: 80px 0;
+    background: #ffffff;
+}
+
+.vendor-page .section-heading {
+    margin-bottom: 50px;
+}
+
+.vendor-page .service-card {
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.vendor-page .service-card p {
+    margin-bottom: 0;
+}
+
+.vendor-page .center-button {
+    margin-top: 45px;
+}
+/* =========================
+   HOW IT WORKS PAGE
+========================= */
+
+.how-page {
+    min-height: 75vh;
+    padding: 80px 0;
+    background: #ffffff;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-top: 50px;
+}
+
+.step-card {
+    padding: 30px 25px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    background: #ffffff;
+    transition: 0.3s;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #166534;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.step-card h3 {
+    margin-bottom: 10px;
+    color: #111827;
+}
+
+.step-card p {
+    color: #6b7280;
+}
+
+.how-cta {
+    text-align: center;
+    margin-top: 60px;
+    padding: 45px 25px;
+    background: #f0fdf4;
+    border-radius: 18px;
+}
+
+.how-cta h2 {
+    font-size: 32px;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.how-cta p {
+    color: #6b7280;
+    margin-bottom: 25px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+/* =========================
+   REGISTER NAV BUTTON
+========================= */
+
+.register-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #166534 !important;
+    border: 1px solid #166534;
+    font-weight: 700 !important;
+    transition: 0.3s;
+}
+
+.register-btn:hover {
+    background: #f0fdf4;
+}
