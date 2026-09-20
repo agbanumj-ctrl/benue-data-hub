@@ -61,7 +61,7 @@ app.use("/api/auth", authRoutes);
 // VTPASS ROUTES
 // ========================================
 
-const vtpassRoutes = require("./server/routes/vtpassroutes");
+const vtpassRoutes = require("./server/routes/vtpassRoutes");
 
 app.use("/api/vtpass", vtpassRoutes);
 
