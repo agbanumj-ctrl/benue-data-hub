@@ -14,6 +14,8 @@ const PORT = 3001;
 // ========================================
 
 console.log("MongoDB URL loaded:", !!process.env.MONGODB_URI);
+console.log("Paystack Secret Key loaded:", !!process.env.PAYSTACK_SECRET_KEY);
+console.log("Paystack Public Key loaded:", !!process.env.PAYSTACK_PUBLIC_KEY);
 
 
 // ========================================
@@ -71,7 +73,13 @@ app.use("/api/vtpass", vtpassRoutes);
 const transactionRoutes = require("./server/routes/transactionRoutes");
 
 app.use("/api/transactions", transactionRoutes);
+// ========================================
+// WALLET ROUTES
+// ========================================
 
+const walletRoutes = require("./server/routes/walletRoutes");
+
+app.use("/api/wallet", walletRoutes);
 
 // ========================================
 // DIRECT POST TEST ROUTE

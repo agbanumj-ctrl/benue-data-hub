@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema(
             enum: ["user", "vendor", "admin"],
             default: "user"
         },
+        walletBalance: {
+    type: Number,
+    default: 0,
+    min: 0
+},
 
         isVerified: {
             type: Boolean,

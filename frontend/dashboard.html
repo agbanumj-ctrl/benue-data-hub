@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Benue Data Hub</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container nav-container">
+
+            <a href="index.html" class="logo">
+                <img
+                    src="assets/logos/logo.png"
+                    alt="Benue Data Hub Logo"
+                >
+            </a>
+
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+
+                <button
+                    id="logoutBtn"
+                    class="login-btn"
+                    type="button"
+                >
+                    Logout
+                </button>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- DASHBOARD -->
+    <main>
+
+        <section class="dashboard-section">
+
+            <div class="container">
+
+                <!-- DASHBOARD HEADING -->
+                <div class="section-heading">
+
+                    <p class="eyebrow">
+                        BENUE DATA HUB
+                    </p>
+
+                    <h1 id="welcomeMessage">
+                        Welcome
+                    </h1>
+
+                    <p>
+                        Manage your digital services from your account.
+                    </p>
+
+                </div>
+
+
+                <!-- ACCOUNT CARD -->
+                <div class="dashboard-card">
+
+                    <h2>My Account</h2>
+
+                    <p>
+                        <strong>Wallet Balance:</strong>
+                        ₦<span id="walletBalance">0.00</span>
+                    </p>
+
+                    <p>
+                        <strong>Name:</strong>
+                        <span id="userName">Loading...</span>
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong>
+                        <span id="userEmail">Loading...</span>
+                    </p>
+
+                    <p>
+                        <strong>Phone:</strong>
+                        <span id="userPhone">Loading...</span>
+                    </p>
+
+                </div>
+
+
+                <!-- FUND WALLET -->
+                <div class="dashboard-card">
+
+                    <h2>Fund Wallet</h2>
+
+                    <p>
+                        Add money to your Benue Data Hub wallet
+                        to pay for digital services.
+                    </p>
+
+                    <form id="fundWalletForm">
+
+                        <div class="form-group">
+
+                            <label for="fundAmount">
+                                Amount (₦)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="fundAmount"
+                                placeholder="1000"
+                                min="100"
+                                step="1"
+                                required
+                            >
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="primary-btn auth-btn"
+                            id="fundWalletBtn"
+                        >
+                            Fund Wallet
+                        </button>
+
+                    </form>
+
+                    <div id="fundWalletResult"></div>
+
+                </div>
+
+
+                <!-- AIRTIME -->
+                <div class="dashboard-card">
+
+                    <h2>Buy Airtime</h2>
+
+                    <p>
+                        Recharge a supported Nigerian network instantly.
+                    </p>
+
+                    <form id="airtimeForm">
+
+                        <div class="form-group">
+
+                            <label for="network">
+                                Network
+                            </label>
+
+                            <select id="network" required>
+
+                                <option value="">
+                                    Select Network
+                                </option>
+
+                                <option value="mtn">
+                                    MTN
+                                </option>
+
+                                <option value="airtel">
+                                    Airtel
+                                </option>
+
+                                <option value="glo">
+                                    Glo
+                                </option>
+
+                                <option value="9mobile">
+                                    9mobile
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="airtimePhone">
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="airtimePhone"
+                                placeholder="08012345678"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="airtimeAmount">
+                                Amount (₦)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="airtimeAmount"
+                                placeholder="100"
+                                min="50"
+                                step="1"
+                                required
+                            >
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="primary-btn auth-btn"
+                            id="buyAirtimeBtn"
+                        >
+                            Buy Airtime
+                        </button>
+
+                    </form>
+
+                    <div id="airtimeResult"></div>
+
+                </div>
+
+
+                <!-- TRANSACTION HISTORY -->
+                <div class="dashboard-card">
+
+                    <h2>Recent Transactions</h2>
+
+                    <div id="transactionHistory">
+
+                        <p>
+                            Loading transactions...
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        <div class="container footer-content">
+
+            <div>
+
+                <h3>
+                    Benue Data Hub
+                </h3>
+
+                <p>
+                    Fast • Reliable • Affordable
+                </p>
+
+                <p class="powered">
+                    Powered by Gbila Legacy
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="services.html">
+                    Services
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 Benue Data Hub. All rights reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="js/script.js"></script>
+
+</body>
+</html>

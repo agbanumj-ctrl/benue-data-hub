@@ -39,6 +39,11 @@ const getAirtimeServices = async () => {
             }
         );
 
+        console.log(
+            "VTPASS AIRTIME SERVICES RESPONSE:",
+            JSON.stringify(response.data, null, 2)
+        );
+
         return response.data;
     } catch (error) {
         console.error(
@@ -49,6 +54,7 @@ const getAirtimeServices = async () => {
         throw error;
     }
 };
+
 const purchaseAirtime = async (serviceID, amount, phone, request_id) => {
     try {
         const response = await axios.post(
@@ -68,9 +74,17 @@ const purchaseAirtime = async (serviceID, amount, phone, request_id) => {
             }
         );
 
+        console.log(
+            "VTPASS PURCHASE RESPONSE:",
+            JSON.stringify(response.data, null, 2)
+        );
+
         return response.data;
     } catch (error) {
-        console.error("VTpass airtime purchase error:", error);
+        console.error(
+            "VTpass airtime purchase error:",
+            error.response?.data || error.message
+        );
 
         throw error;
     }

@@ -2,7 +2,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
-// Register a new user
+// ========================================
+// REGISTER A NEW USER
+// ========================================
+
 const registerUser = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
@@ -43,11 +46,17 @@ const registerUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
-                role: user.role
+                role: user.role,
+                walletBalance: user.walletBalance
             }
         });
+
     } catch (error) {
-        console.error("Registration error:", error.message);
+
+        console.error(
+            "Registration error:",
+            error.message
+        );
 
         res.status(500).json({
             success: false,
@@ -56,7 +65,11 @@ const registerUser = async (req, res) => {
     }
 };
 
-// Login an existing user
+
+// ========================================
+// LOGIN AN EXISTING USER
+// ========================================
+
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -77,7 +90,7 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Compare entered password with the stored hashed password
+        // Compare entered password with stored hashed password
         const passwordMatch = await bcrypt.compare(
             password,
             user.password
@@ -90,31 +103,39 @@ const loginUser = async (req, res) => {
             });
         }
 
+        // Create JWT token
         const token = jwt.sign(
-    {
-        id: user._id,
-        role: user.role
-    },
-    process.env.JWT_SECRET,
-    {
-        expiresIn: "7d"
-    }
-);
+            {
+                id: user._id,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "7d"
+            }
+        );
 
-res.json({
-    success: true,
-    message: "Login successful.",
-    token,
-    user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role
-    }
-});
+        // Send login response
+        res.json({
+            success: true,
+            message: "Login successful.",
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
+                walletBalance: user.walletBalance
+            }
+        });
+
     } catch (error) {
-        console.error("Login error:", error.message);
+
+        console.error(
+            "Login error:",
+            error.message
+        );
 
         res.status(500).json({
             success: false,
@@ -123,7 +144,11 @@ res.json({
     }
 };
 
-// Export authentication controllers
+
+// ========================================
+// EXPORT AUTHENTICATION CONTROLLERS
+// ========================================
+
 module.exports = {
     registerUser,
     loginUser
