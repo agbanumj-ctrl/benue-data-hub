@@ -1,7 +1,8 @@
-document.addEventListener("DOMContentLoaded", () => {
+const API_BASE_URL = "https://benue-data-hub.onrender.com";
+
+document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("Benue Data Hub frontend loaded successfully.");
-
 
     // ========================================
     // REGISTER
@@ -31,22 +32,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
 
-                const response = await fetch("/api/auth/register", {
+                const response = await fetch(
+                    `${API_BASE_URL}/api/auth/register`,
+                    {
+                        method: "POST",
 
-                    method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        phone,
-                        password
-                    })
-
-                });
+                        body: JSON.stringify({
+                            name,
+                            email,
+                            phone,
+                            password
+                        })
+                    }
+                );
 
                 const data = await response.json();
 
@@ -99,20 +101,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
 
-                const response = await fetch("/api/auth/login", {
+                const response = await fetch(
+                    `${API_BASE_URL}/api/auth/login`,
+                    {
+                        method: "POST",
 
-                    method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        email,
-                        password
-                    })
-
-                });
+                        body: JSON.stringify({
+                            email,
+                            password
+                        })
+                    }
+                );
 
                 const data = await response.json();
 
@@ -163,7 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const savedUser =
             localStorage.getItem("user");
 
-
         // Check if user is logged in
         if (!token || !savedUser) {
 
@@ -175,12 +177,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
         try {
 
             const user =
                 JSON.parse(savedUser);
-
 
             // Display user information
             const userName =
@@ -225,53 +225,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (walletBalance) {
 
-    walletBalance.textContent =
-        Number(user.walletBalance || 0).toFixed(2);
+                walletBalance.textContent =
+                    Number(user.walletBalance || 0).toFixed(2);
 
-    // Get the latest wallet balance from the backend
-    fetch("/api/wallet/balance", {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
+                // Get latest wallet balance from backend
+                try {
 
-        console.log(
-            "WALLET BALANCE:",
-            data
-        );
+                    const response = await fetch(
+                        `${API_BASE_URL}/api/wallet/balance`,
+                        {
+                            method: "GET",
 
-        if (
-            data.success &&
-            data.walletBalance !== undefined
-        ) {
+                            headers: {
+                                "Authorization": `Bearer ${token}`
+                            }
+                        }
+                    );
 
-            walletBalance.textContent =
-                Number(data.walletBalance).toFixed(2);
+                    const data = await response.json();
 
-            // Keep local storage synchronized
-            user.walletBalance =
-                data.walletBalance;
+                    console.log("WALLET BALANCE:", data);
 
-            localStorage.setItem(
-                "user",
-                JSON.stringify(user)
-            );
-        }
+                    if (
+                        data.success &&
+                        data.walletBalance !== undefined
+                    ) {
 
-    })
-    .catch(error => {
+                        walletBalance.textContent =
+                            Number(data.walletBalance).toFixed(2);
 
-        console.error(
-            "Wallet balance error:",
-            error
-        );
+                        user.walletBalance =
+                            data.walletBalance;
 
-    });
+                        localStorage.setItem(
+                            "user",
+                            JSON.stringify(user)
+                        );
 
-}
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Wallet balance error:",
+                        error
+                    );
+
+                }
+
+            }
 
 
             if (welcomeMessage) {
@@ -333,10 +335,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 event.preventDefault();
 
-
                 const token =
                     localStorage.getItem("token");
-
 
                 if (!token) {
 
@@ -348,7 +348,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 }
 
-
                 const amount =
                     Number(
                         document
@@ -356,13 +355,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             .value
                     );
 
-
                 const fundButton =
                     document.getElementById("fundWalletBtn");
 
                 const result =
                     document.getElementById("fundWalletResult");
-
 
                 if (!Number.isFinite(amount) || amount < 100) {
 
@@ -376,10 +373,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 }
 
-
                 fundButton.disabled = true;
                 fundButton.textContent = "Preparing Payment...";
-
 
                 result.innerHTML = `
                     <p>
@@ -387,14 +382,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     </p>
                 `;
 
-
                 try {
 
                     const response =
                         await fetch(
-                            "/api/wallet/fund",
+                            `${API_BASE_URL}/api/wallet/fund`,
                             {
-
                                 method: "POST",
 
                                 headers: {
@@ -408,20 +401,16 @@ document.addEventListener("DOMContentLoaded", () => {
                                 body: JSON.stringify({
                                     amount
                                 })
-
                             }
                         );
 
-
                     const data =
                         await response.json();
-
 
                     console.log(
                         "WALLET FUNDING RESPONSE:",
                         data
                     );
-
 
                     if (
                         response.ok &&
@@ -434,7 +423,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 Redirecting to secure payment...
                             </p>
                         `;
-
 
                         window.location.href =
                             data.authorization_url;
@@ -464,7 +452,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         "Wallet funding error:",
                         error
                     );
-
 
                     result.innerHTML = `
                         <p>
@@ -503,10 +490,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 event.preventDefault();
 
-
                 const token =
                     localStorage.getItem("token");
-
 
                 if (!token) {
 
@@ -517,7 +502,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
 
                 }
-
 
                 const service = "airtime";
 
@@ -539,7 +523,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             .value
                     );
 
-
                 if (!serviceID || !phone || !amount) {
 
                     alert(
@@ -550,7 +533,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 }
 
-
                 // Generate unique request ID
                 const requestId =
                     "BDH-" +
@@ -559,7 +541,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     Math.floor(
                         Math.random() * 1000
                     );
-
 
                 const buyButton =
                     document.getElementById(
@@ -571,34 +552,28 @@ document.addEventListener("DOMContentLoaded", () => {
                         "airtimeResult"
                     );
 
-
                 buyButton.disabled = true;
 
                 buyButton.textContent =
                     "Processing...";
 
-
                 result.innerHTML =
                     "<p>Processing your airtime purchase...</p>";
-
 
                 try {
 
                     const response =
                         await fetch(
-                            "/api/transactions/create",
+                            `${API_BASE_URL}/api/transactions/create`,
                             {
-
                                 method: "POST",
 
                                 headers: {
-
                                     "Content-Type":
                                         "application/json",
 
                                     "Authorization":
                                         `Bearer ${token}`
-
                                 },
 
                                 body: JSON.stringify({
@@ -610,20 +585,16 @@ document.addEventListener("DOMContentLoaded", () => {
                                     requestId
 
                                 })
-
                             }
                         );
 
-
                     const data =
                         await response.json();
-
 
                     console.log(
                         "AIRTIME PURCHASE RESPONSE:",
                         data
                     );
-
 
                     if (
                         response.ok &&
@@ -663,12 +634,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         `;
 
-
                         airtimeForm.reset();
 
-
-                        // Refresh saved wallet balance
-                        if (data.data?.walletBalance !== undefined) {
+                        // Controller returns walletBalance
+                        // at the top level of the response.
+                        if (
+                            data.walletBalance !== undefined
+                        ) {
 
                             const walletBalance =
                                 document.getElementById(
@@ -679,11 +651,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 walletBalance.textContent =
                                     Number(
-                                        data.data.walletBalance
+                                        data.walletBalance
                                     ).toFixed(2);
 
                             }
-
 
                             const savedUser =
                                 localStorage.getItem("user");
@@ -694,7 +665,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     JSON.parse(savedUser);
 
                                 user.walletBalance =
-                                    data.data.walletBalance;
+                                    data.walletBalance;
 
                                 localStorage.setItem(
                                     "user",
@@ -733,7 +704,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         error
                     );
 
-
                     result.innerHTML = `
 
                         <p>
@@ -767,39 +737,37 @@ document.addEventListener("DOMContentLoaded", () => {
             "transactionHistory"
         );
 
-
     if (transactionHistory) {
 
         const token =
             localStorage.getItem("token");
 
-
         if (!token) {
             return;
         }
 
+        try {
 
-        fetch(
-            "/api/transactions/my-transactions",
-            {
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/api/transactions/my-transactions`,
+                    {
+                        method: "GET",
 
-                method: "GET",
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
 
-                headers: {
-                    "Authorization":
-                        `Bearer ${token}`
-                }
-
-            }
-        )
-        .then(response => response.json())
-        .then(data => {
+            const data =
+                await response.json();
 
             console.log(
                 "TRANSACTION HISTORY:",
                 data
             );
-
 
             if (
                 !data.success ||
@@ -813,7 +781,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
 
             }
-
 
             transactionHistory.innerHTML =
                 data.data.map(
@@ -855,19 +822,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 ).join("");
 
-        })
-        .catch(error => {
+        } catch (error) {
 
             console.error(
                 "Transaction history error:",
                 error
             );
 
-
             transactionHistory.innerHTML =
                 "<p>Unable to load transaction history.</p>";
 
-        });
+        }
 
     }
 
