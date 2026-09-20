@@ -6,7 +6,7 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 
 // ========================================
@@ -14,8 +14,8 @@ const PORT = 3001;
 // ========================================
 
 console.log("MongoDB URL loaded:", !!process.env.MONGODB_URI);
-console.log("Paystack Secret Key loaded:", !!process.env.PAYSTACK_SECRET_KEY);
-console.log("Paystack Public Key loaded:", !!process.env.PAYSTACK_PUBLIC_KEY);
+console.log("PAYSTACK Secret Key loaded:", !!process.env.PAYSTACK_SECRET_KEY);
+console.log("PAYSTACK Public Key loaded:", !!process.env.PAYSTACK_PUBLIC_KEY);
 
 
 // ========================================
