@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Dashboard | Benue Data Hub</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+<body>
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header class="header">
+
+        <div class="container nav-container">
+
+            <a href="index.html" class="logo">
+
+                <img
+                    src="assets/logos/logo.png"
+                    alt="Benue Data Hub Logo"
+                >
+
+            </a>
+
+            <nav class="nav">
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="services.html">
+                    Services
+                </a>
+
+                <button
+                    type="button"
+                    id="logoutBtn"
+                    class="nav-logout"
+                >
+                    Logout
+                </button>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- ========================================
+         MAIN
+    ========================================= -->
+
+    <main class="dashboard-page">
+
+        <div class="container dashboard-container">
+
+
+            <!-- ========================================
+                 WELCOME
+            ========================================= -->
+
+            <section class="dashboard-welcome">
+
+                <div>
+
+                    <p class="eyebrow">
+                        ADMINISTRATION
+                    </p>
+
+                    <h1 id="welcomeMessage">
+                        Welcome, Administrator
+                    </h1>
+
+                    <p>
+                        Monitor and manage the Benue Data Hub
+                        platform from one central dashboard.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================================
+                 PLATFORM OVERVIEW
+            ========================================= -->
+
+            <section>
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            PLATFORM
+                        </p>
+
+                        <h2>
+                            Platform Overview
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="services-grid">
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            👥
+                        </div>
+
+                        <h3>
+                            Total Users
+                        </h3>
+
+                        <strong id="totalUsers">
+                            0
+                        </strong>
+
+                        <p>
+                            Registered customer accounts.
+                        </p>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            🏪
+                        </div>
+
+                        <h3>
+                            Total Vendors
+                        </h3>
+
+                        <strong id="totalVendors">
+                            0
+                        </strong>
+
+                        <p>
+                            Registered vendor accounts.
+                        </p>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            🧾
+                        </div>
+
+                        <h3>
+                            Transactions
+                        </h3>
+
+                        <strong id="totalTransactions">
+                            0
+                        </strong>
+
+                        <p>
+                            Platform transactions processed.
+                        </p>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            🟢
+                        </div>
+
+                        <h3>
+                            Active Accounts
+                        </h3>
+
+                        <strong id="activeAccounts">
+                            0
+                        </strong>
+
+                        <p>
+                            Accounts currently active.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================================
+                 FINANCIAL OVERVIEW
+            ========================================= -->
+
+            <section class="dashboard-card">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            FINANCIAL
+                        </p>
+
+                        <h2>
+                            Financial Overview
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="services-grid">
+
+                    <article class="service-card">
+
+                        <h3>
+                            Wallet Funding
+                        </h3>
+
+                        <strong id="totalWalletFunding">
+                            ₦0.00
+                        </strong>
+
+                        <p>
+                            Total successful wallet funding.
+                        </p>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <h3>
+                            Successful Transactions
+                        </h3>
+
+                        <strong id="successfulTransactions">
+                            0
+                        </strong>
+
+                        <p>
+                            Successfully completed transactions.
+                        </p>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <h3>
+                            Failed Transactions
+                        </h3>
+
+                        <strong id="failedTransactions">
+                            0
+                        </strong>
+
+                        <p>
+                            Failed or reversed transactions.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================================
+                 USER MANAGEMENT
+            ========================================= -->
+
+            <section
+                class="dashboard-card"
+                id="userManagement"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            MANAGEMENT
+                        </p>
+
+                        <h2>
+                            Customer Accounts
+                        </h2>
+
+                        <p>
+                            View and manage registered customers.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="refreshUsersBtn"
+                    >
+                        Refresh Users
+                    </button>
+
+                </div>
+
+
+                <div id="usersResult">
+
+                    <p>
+                        Loading customer accounts...
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================================
+                 VENDOR MANAGEMENT
+            ========================================= -->
+
+            <section
+                class="dashboard-card"
+                id="vendorManagement"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            VENDOR NETWORK
+                        </p>
+
+                        <h2>
+                            Vendor Accounts
+                        </h2>
+
+                        <p>
+                            Review registered vendors and their accounts.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="refreshVendorsBtn"
+                    >
+                        Refresh Vendors
+                    </button>
+
+                </div>
+
+
+                <div id="vendorsResult">
+
+                    <p>
+                        Loading vendor accounts...
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================================
+                 ACCOUNT MANAGEMENT
+            ========================================= -->
+
+            <section class="dashboard-card">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            ACCOUNT CONTROL
+                        </p>
+
+                        <h2>
+                            Account Management
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="services-grid">
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            👤
+                        </div>
+
+                        <h3>
+                            Users
+                        </h3>
+
+                        <p>
+                            View customer accounts and
+                            account activity.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="secondary-btn"
+                            id="manageUsersBtn"
+                        >
+                            Manage Users
+                        </button>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            🏪
+                        </div>
+
+                        <h3>
+                            Vendors
+                        </h3>
+
+                        <p>
+                            Review vendor accounts and
+                            business information.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="secondary-btn"
+                            id="manageVendorsBtn"
+                        >
+                            Manage Vendors
+                        </button>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            🛡️
+                        </div>
+
+                        <h3>
+                            Account Status
+                        </h3>
+
+                        <p>
+                            Activate, deactivate and verify
+                            platform accounts.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="secondary-btn"
+                            id="manageAccountsBtn"
+                        >
+                            Account Controls
+                        </button>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================================
+                 TRANSACTION MANAGEMENT
+            ========================================= -->
+
+            <section class="dashboard-card">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            TRANSACTIONS
+                        </p>
+
+                        <h2>
+                            Transaction Monitoring
+                        </h2>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="refreshAdminTransactionsBtn"
+                    >
+                        Refresh
+                    </button>
+
+                </div>
+
+
+                <div id="adminTransactionHistory">
+
+                    <div class="coming-soon">
+
+                        <h3>
+                            Platform Transactions
+                        </h3>
+
+                        <p>
+                            Loading platform transactions...
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================================
+                 REPORTS
+            ========================================= -->
+
+            <section class="dashboard-card">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            REPORTS
+                        </p>
+
+                        <h2>
+                            Platform Reports
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="services-grid">
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            📊
+                        </div>
+
+                        <h3>
+                            Sales Reports
+                        </h3>
+
+                        <p>
+                            Review platform sales and
+                            transaction performance.
+                        </p>
+
+                        <span class="status-badge">
+                            Available through transactions
+                        </span>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            💰
+                        </div>
+
+                        <h3>
+                            Wallet Reports
+                        </h3>
+
+                        <p>
+                            Monitor wallet funding and
+                            financial activity.
+                        </p>
+
+                        <span class="status-badge">
+                            Active
+                        </span>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            📈
+                        </div>
+
+                        <h3>
+                            Growth Reports
+                        </h3>
+
+                        <p>
+                            Monitor customer and vendor
+                            platform growth.
+                        </p>
+
+                        <span class="status-badge">
+                            Active
+                        </span>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- ========================================
+                 SYSTEM
+            ========================================= -->
+
+            <section class="dashboard-card">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            SYSTEM
+                        </p>
+
+                        <h2>
+                            System & Support
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="services-grid">
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            ⚙️
+                        </div>
+
+                        <h3>
+                            System Status
+                        </h3>
+
+                        <p>
+                            Monitor platform services and
+                            backend availability.
+                        </p>
+
+                        <span class="status-badge">
+                            Online
+                        </span>
+
+                    </article>
+
+
+                    <article class="service-card">
+
+                        <div class="service-icon">
+                            🆘
+                        </div>
+
+                        <h3>
+                            Support
+                        </h3>
+
+                        <p>
+                            Handle platform support requests
+                            and operational issues.
+                        </p>
+
+                        <a
+                            href="mailto:gbilasystemsitsolution@gmail.com"
+                            class="secondary-btn"
+                        >
+                            Contact Support
+                        </a>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- ========================================
+         FOOTER
+    ========================================= -->
+
+    <footer class="footer">
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 Benue Data Hub.
+                All rights reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/script.js"></script>
+
+</body>
+</html>

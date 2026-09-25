@@ -13,18 +13,25 @@
 
     <!-- HEADER -->
     <header class="header">
+
         <div class="container nav-container">
 
-            <a href="index.html" class="logo">
+            <a href="index.html" class="logo" aria-label="Benue Data Hub Home">
                 <img
                     src="assets/logos/logo.png"
                     alt="Benue Data Hub Logo"
                 >
             </a>
 
-            <nav class="nav">
-                <a href="index.html">Home</a>
-                <a href="services.html">Services</a>
+            <nav class="nav" aria-label="Main navigation">
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="services.html">
+                    Services
+                </a>
 
                 <button
                     id="logoutBtn"
@@ -33,214 +40,609 @@
                 >
                     Logout
                 </button>
+
             </nav>
 
         </div>
+
     </header>
 
 
-    <!-- DASHBOARD -->
+    <!-- CUSTOMER DASHBOARD -->
     <main>
 
         <section class="dashboard-section">
 
-            <div class="container">
+            <div class="container dashboard-container">
 
-                <!-- DASHBOARD HEADING -->
-                <div class="section-heading">
+                <!-- WELCOME AREA -->
+                <div class="dashboard-welcome">
 
-                    <p class="eyebrow">
-                        BENUE DATA HUB
-                    </p>
+                    <div>
 
-                    <h1 id="welcomeMessage">
-                        Welcome
-                    </h1>
+                        <p class="eyebrow">
+                            BENUE DATA HUB
+                        </p>
 
-                    <p>
-                        Manage your digital services from your account.
-                    </p>
+                        <h1 id="welcomeMessage">
+                            Welcome
+                        </h1>
 
-                </div>
-
-
-                <!-- ACCOUNT CARD -->
-                <div class="dashboard-card">
-
-                    <h2>My Account</h2>
-
-                    <p>
-                        <strong>Wallet Balance:</strong>
-                        ₦<span id="walletBalance">0.00</span>
-                    </p>
-
-                    <p>
-                        <strong>Name:</strong>
-                        <span id="userName">Loading...</span>
-                    </p>
-
-                    <p>
-                        <strong>Email:</strong>
-                        <span id="userEmail">Loading...</span>
-                    </p>
-
-                    <p>
-                        <strong>Phone:</strong>
-                        <span id="userPhone">Loading...</span>
-                    </p>
-
-                </div>
-
-
-                <!-- FUND WALLET -->
-                <div class="dashboard-card">
-
-                    <h2>Fund Wallet</h2>
-
-                    <p>
-                        Add money to your Benue Data Hub wallet
-                        to pay for digital services.
-                    </p>
-
-                    <form id="fundWalletForm">
-
-                        <div class="form-group">
-
-                            <label for="fundAmount">
-                                Amount (₦)
-                            </label>
-
-                            <input
-                                type="number"
-                                id="fundAmount"
-                                placeholder="1000"
-                                min="100"
-                                step="1"
-                                required
-                            >
-
-                        </div>
-
-                        <button
-                            type="submit"
-                            class="primary-btn auth-btn"
-                            id="fundWalletBtn"
-                        >
-                            Fund Wallet
-                        </button>
-
-                    </form>
-
-                    <div id="fundWalletResult"></div>
-
-                </div>
-
-
-                <!-- AIRTIME -->
-                <div class="dashboard-card">
-
-                    <h2>Buy Airtime</h2>
-
-                    <p>
-                        Recharge a supported Nigerian network instantly.
-                    </p>
-
-                    <form id="airtimeForm">
-
-                        <div class="form-group">
-
-                            <label for="network">
-                                Network
-                            </label>
-
-                            <select id="network" required>
-
-                                <option value="">
-                                    Select Network
-                                </option>
-
-                                <option value="mtn">
-                                    MTN
-                                </option>
-
-                                <option value="airtel">
-                                    Airtel
-                                </option>
-
-                                <option value="glo">
-                                    Glo
-                                </option>
-
-                                <option value="9mobile">
-                                    9mobile
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="airtimePhone">
-                                Phone Number
-                            </label>
-
-                            <input
-                                type="tel"
-                                id="airtimePhone"
-                                placeholder="08012345678"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="airtimeAmount">
-                                Amount (₦)
-                            </label>
-
-                            <input
-                                type="number"
-                                id="airtimeAmount"
-                                placeholder="100"
-                                min="50"
-                                step="1"
-                                required
-                            >
-
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            class="primary-btn auth-btn"
-                            id="buyAirtimeBtn"
-                        >
-                            Buy Airtime
-                        </button>
-
-                    </form>
-
-                    <div id="airtimeResult"></div>
-
-                </div>
-
-
-                <!-- TRANSACTION HISTORY -->
-                <div class="dashboard-card">
-
-                    <h2>Recent Transactions</h2>
-
-                    <div id="transactionHistory">
-
-                        <p>
-                            Loading transactions...
+                        <p class="dashboard-subtitle">
+                            Manage your wallet and digital services from one place.
                         </p>
 
                     </div>
+
+                </div>
+
+
+                <!-- DASHBOARD GRID -->
+                <div class="dashboard-grid">
+
+
+                    <!-- MAIN CONTENT -->
+                    <div class="dashboard-main">
+
+
+                        <!-- WALLET CARD -->
+                        <div class="wallet-card">
+
+                            <div class="wallet-card-top">
+
+                                <div>
+
+                                    <p class="wallet-label">
+                                        Available Wallet Balance
+                                    </p>
+
+                                    <h2>
+                                        ₦<span id="walletBalance">0.00</span>
+                                    </h2>
+
+                                </div>
+
+                                <div class="wallet-icon" aria-hidden="true">
+                                    ₦
+                                </div>
+
+                            </div>
+
+
+                            <div class="wallet-card-bottom">
+
+                                <span>
+                                    Use your wallet to pay for digital services.
+                                </span>
+
+                                <button
+                                    type="button"
+                                    class="wallet-action"
+                                    onclick="document.getElementById('fundWalletForm').scrollIntoView({ behavior: 'smooth' });"
+                                >
+                                    Fund Wallet
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- QUICK SERVICES -->
+                        <div class="dashboard-section-block">
+
+                            <div class="section-heading dashboard-block-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        QUICK SERVICES
+                                    </p>
+
+                                    <h2>
+                                        What do you need today?
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="service-grid">
+
+
+                                <!-- AIRTIME SERVICE -->
+                                <a
+                                    href="#airtimeSection"
+                                    class="service-card"
+                                >
+
+                                    <div class="service-icon">
+                                        📱
+                                    </div>
+
+                                    <div>
+
+                                        <h3>
+                                            Buy Airtime
+                                        </h3>
+
+                                        <p>
+                                            Recharge any supported network.
+                                        </p>
+
+                                    </div>
+
+                                    <span class="service-arrow">
+                                        →
+                                    </span>
+
+                                </a>
+
+
+                                <!-- DATA SERVICE -->
+                                <a
+                                    href="#dataSection"
+                                    class="service-card"
+                                >
+
+                                    <div class="service-icon">
+                                        📶
+                                    </div>
+
+                                    <div>
+
+                                        <h3>
+                                            Buy Data
+                                        </h3>
+
+                                        <p>
+                                            Get data plans for your devices.
+                                        </p>
+
+                                    </div>
+
+                                    <span class="service-arrow">
+                                        →
+                                    </span>
+
+                                </a>
+
+
+                                <!-- TRANSACTIONS -->
+                                <a
+                                    href="#transactionsSection"
+                                    class="service-card"
+                                >
+
+                                    <div class="service-icon">
+                                        📋
+                                    </div>
+
+                                    <div>
+
+                                        <h3>
+                                            Transactions
+                                        </h3>
+
+                                        <p>
+                                            View your recent transactions.
+                                        </p>
+
+                                    </div>
+
+                                    <span class="service-arrow">
+                                        →
+                                    </span>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- FUND WALLET -->
+                        <div
+                            class="dashboard-card dashboard-section-block"
+                            id="walletSection"
+                        >
+
+                            <div class="card-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        WALLET
+                                    </p>
+
+                                    <h2>
+                                        Fund Your Wallet
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+                            <p class="card-description">
+                                Add money to your Benue Data Hub wallet
+                                to pay for airtime and other digital services.
+                            </p>
+
+
+                            <form id="fundWalletForm">
+
+                                <div class="form-group">
+
+                                    <label for="fundAmount">
+                                        Amount (₦)
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="fundAmount"
+                                        placeholder="1000"
+                                        min="100"
+                                        step="1"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="primary-btn auth-btn"
+                                    id="fundWalletBtn"
+                                >
+                                    Fund Wallet
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="fundWalletResult"
+                                aria-live="polite"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- AIRTIME -->
+                        <div
+                            class="dashboard-card dashboard-section-block"
+                            id="airtimeSection"
+                        >
+
+                            <div class="card-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        AIRTIME
+                                    </p>
+
+                                    <h2>
+                                        Buy Airtime
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+                            <p class="card-description">
+                                Recharge a supported Nigerian network
+                                directly from your Benue Data Hub wallet.
+                            </p>
+
+
+                            <form id="airtimeForm">
+
+
+                                <div class="form-group">
+
+                                    <label for="network">
+                                        Network
+                                    </label>
+
+                                    <select
+                                        id="network"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Select Network
+                                        </option>
+
+                                        <option value="mtn">
+                                            MTN
+                                        </option>
+
+                                        <option value="airtel">
+                                            Airtel
+                                        </option>
+
+                                        <option value="glo">
+                                            Glo
+                                        </option>
+
+                                        <option value="9mobile">
+                                            9mobile
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="airtimePhone">
+                                        Phone Number
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        id="airtimePhone"
+                                        placeholder="08012345678"
+                                        inputmode="numeric"
+                                        autocomplete="tel"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="airtimeAmount">
+                                        Amount (₦)
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="airtimeAmount"
+                                        placeholder="100"
+                                        min="50"
+                                        step="1"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="primary-btn auth-btn"
+                                    id="buyAirtimeBtn"
+                                >
+                                    Buy Airtime
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="airtimeResult"
+                                aria-live="polite"
+                            ></div>
+
+                        </div>
+
+
+                        <!-- DATA -->
+                        <div
+                            class="dashboard-card dashboard-section-block"
+                            id="dataSection"
+                        >
+
+                            <div class="card-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        DATA
+                                    </p>
+
+                                    <h2>
+                                        Buy Data
+                                    </h2>
+
+                                </div>
+
+                                <span class="status-badge">
+                                    Coming Soon
+                                </span>
+
+                            </div>
+
+                            <p class="card-description">
+                                Data bundles for supported Nigerian networks
+                                will be available here.
+                            </p>
+
+
+                            <div class="coming-soon-box">
+
+                                <div class="coming-soon-icon">
+                                    📶
+                                </div>
+
+                                <div>
+
+                                    <h3>
+                                        Data services are being prepared
+                                    </h3>
+
+                                    <p>
+                                        We're setting up the available data
+                                        plans and pricing. This section will
+                                        become active when the service is ready.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TRANSACTION HISTORY -->
+                        <div
+                            class="dashboard-card dashboard-section-block"
+                            id="transactionsSection"
+                        >
+
+                            <div class="card-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        ACTIVITY
+                                    </p>
+
+                                    <h2>
+                                        Recent Transactions
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                id="transactionHistory"
+                                class="transaction-history"
+                            >
+
+                                <p>
+                                    Loading transactions...
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- SIDEBAR -->
+                    <aside class="dashboard-sidebar">
+
+
+                        <!-- ACCOUNT CARD -->
+                        <div class="dashboard-card account-card">
+
+                            <div class="account-card-header">
+
+                                <div class="account-avatar">
+                                    <span id="accountInitial">
+                                        U
+                                    </span>
+                                </div>
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        MY ACCOUNT
+                                    </p>
+
+                                    <h2 id="userName">
+                                        Loading...
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="account-details">
+
+                                <div class="account-detail">
+
+                                    <span>
+                                        Email
+                                    </span>
+
+                                    <strong id="userEmail">
+                                        Loading...
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="account-detail">
+
+                                    <span>
+                                        Phone
+                                    </span>
+
+                                    <strong id="userPhone">
+                                        Loading...
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- WALLET SUMMARY -->
+                        <div class="dashboard-card sidebar-card">
+
+                            <p class="eyebrow">
+                                WALLET
+                            </p>
+
+                            <h3>
+                                ₦<span id="sidebarWalletBalance">0.00</span>
+                            </h3>
+
+                            <p>
+                                Available balance
+                            </p>
+
+                            <button
+                                type="button"
+                                class="secondary-btn"
+                                onclick="document.getElementById('walletSection').scrollIntoView({ behavior: 'smooth' });"
+                            >
+                                Add Money
+                            </button>
+
+                        </div>
+
+
+                        <!-- SUPPORT -->
+                        <div class="dashboard-card sidebar-card support-card">
+
+                            <p class="eyebrow">
+                                NEED HELP?
+                            </p>
+
+                            <h3>
+                                We're here to help.
+                            </h3>
+
+                            <p>
+                                If you experience an issue with your account
+                                or transaction, contact Benue Data Hub support.
+                            </p>
+
+                            <a
+                                href="services.html"
+                                class="text-link"
+                            >
+                                Visit Services →
+                            </a>
+
+                        </div>
+
+
+                    </aside>
 
                 </div>
 
@@ -281,6 +683,10 @@
 
                 <a href="services.html">
                     Services
+                </a>
+
+                <a href="dashboard.html">
+                    Dashboard
                 </a>
 
             </div>

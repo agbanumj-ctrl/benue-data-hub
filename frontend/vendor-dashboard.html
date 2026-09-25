@@ -1,0 +1,900 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Vendor Dashboard | Benue Data Hub</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ========================================
+         VENDOR DASHBOARD ROOT
+    ========================================= -->
+
+    <div id="vendorDashboard">
+
+
+        <!-- ========================================
+             HEADER
+        ========================================= -->
+
+        <header class="header">
+
+            <div class="container nav-container">
+
+                <a
+                    href="index.html"
+                    class="logo"
+                >
+
+                    <img
+                        src="assets/logos/logo.png"
+                        alt="Benue Data Hub Logo"
+                    >
+
+                </a>
+
+
+                <nav class="nav">
+
+                    <a href="index.html">
+                        Home
+                    </a>
+
+                    <a href="services.html">
+                        Services
+                    </a>
+
+                    <button
+                        type="button"
+                        id="logoutBtn"
+                        class="nav-logout"
+                    >
+                        Logout
+                    </button>
+
+                </nav>
+
+            </div>
+
+        </header>
+
+
+        <!-- ========================================
+             MAIN
+        ========================================= -->
+
+        <main class="dashboard-page">
+
+            <div class="container dashboard-container">
+
+
+                <!-- ========================================
+                     WELCOME
+                ========================================= -->
+
+                <section class="dashboard-welcome">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            VENDOR PORTAL
+                        </p>
+
+                        <h1 id="welcomeMessage">
+                            Welcome, Vendor
+                        </h1>
+
+                        <p>
+                            Manage your business, customers,
+                            sales and digital services from one place.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ========================================
+                     DASHBOARD GRID
+                ========================================= -->
+
+                <div class="dashboard-grid">
+
+
+                    <!-- ========================================
+                         MAIN CONTENT
+                    ========================================= -->
+
+                    <section class="dashboard-main">
+
+
+                        <!-- ========================================
+                             WALLET
+                        ========================================= -->
+
+                        <div class="wallet-card">
+
+                            <div class="wallet-content">
+
+                                <p class="wallet-label">
+                                    Vendor Wallet Balance
+                                </p>
+
+                                <h2 id="walletBalance">
+                                    ₦0.00
+                                </h2>
+
+                                <p>
+                                    Available for airtime and
+                                    data transactions.
+                                </p>
+
+                            </div>
+
+
+                            <div class="wallet-actions">
+
+                                <a
+                                    href="#fundWalletSection"
+                                    class="secondary-btn"
+                                >
+                                    Fund Wallet
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ========================================
+                             BUSINESS SUMMARY
+                        ========================================= -->
+
+                        <div class="section-heading">
+
+                            <div>
+
+                                <p class="eyebrow">
+                                    BUSINESS
+                                </p>
+
+                                <h2>
+                                    Business Overview
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="services-grid">
+
+
+                            <article class="service-card">
+
+                                <div class="service-icon">
+                                    ₦
+                                </div>
+
+                                <h3>
+                                    Total Sales
+                                </h3>
+
+                                <strong id="totalSales">
+                                    ₦0.00
+                                </strong>
+
+                                <p>
+                                    Your total processed sales.
+                                </p>
+
+                            </article>
+
+
+                            <article class="service-card">
+
+                                <div class="service-icon">
+                                    ₵
+                                </div>
+
+                                <h3>
+                                    Commission
+                                </h3>
+
+                                <strong id="totalCommission">
+                                    ₦0.00
+                                </strong>
+
+                                <p>
+                                    Your current earnings.
+                                </p>
+
+                            </article>
+
+
+                            <article class="service-card">
+
+                                <div class="service-icon">
+                                    👥
+                                </div>
+
+                                <h3>
+                                    Customers
+                                </h3>
+
+                                <strong id="customerCount">
+                                    0
+                                </strong>
+
+                                <p>
+                                    Customers served.
+                                </p>
+
+                            </article>
+
+
+                        </div>
+
+
+                        <!-- ========================================
+                             QUICK SERVICES
+                        ========================================= -->
+
+                        <div class="section-heading">
+
+                            <div>
+
+                                <p class="eyebrow">
+                                    SERVICES
+                                </p>
+
+                                <h2>
+                                    Quick Services
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="services-grid">
+
+
+                            <article class="service-card">
+
+                                <div class="service-icon">
+                                    📱
+                                </div>
+
+                                <h3>
+                                    Buy Airtime
+                                </h3>
+
+                                <p>
+                                    Purchase airtime using your
+                                    vendor wallet.
+                                </p>
+
+                                <a
+                                    href="#airtimeSection"
+                                    class="primary-btn"
+                                >
+                                    Buy Airtime
+                                </a>
+
+                            </article>
+
+
+                            <article class="service-card">
+
+                                <div class="service-icon">
+                                    📶
+                                </div>
+
+                                <h3>
+                                    Buy Data
+                                </h3>
+
+                                <p>
+                                    Data services will be
+                                    available here.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    class="secondary-btn"
+                                    disabled
+                                >
+                                    Coming Soon
+                                </button>
+
+                            </article>
+
+
+                            <article class="service-card">
+
+                                <div class="service-icon">
+                                    🧾
+                                </div>
+
+                                <h3>
+                                    Transactions
+                                </h3>
+
+                                <p>
+                                    View your recent vendor
+                                    transactions.
+                                </p>
+
+                                <a
+                                    href="#transactionSection"
+                                    class="secondary-btn"
+                                >
+                                    View History
+                                </a>
+
+                            </article>
+
+
+                        </div>
+
+
+                        <!-- ========================================
+                             FUND WALLET
+                        ========================================= -->
+
+                        <section
+                            class="dashboard-card"
+                            id="fundWalletSection"
+                        >
+
+                            <div class="section-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        WALLET
+                                    </p>
+
+                                    <h2>
+                                        Fund Vendor Wallet
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <form id="fundWalletForm">
+
+                                <div class="form-group">
+
+                                    <label for="fundAmount">
+                                        Amount
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="fundAmount"
+                                        min="100"
+                                        placeholder="Enter amount"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    id="fundWalletBtn"
+                                    class="primary-btn"
+                                >
+                                    Fund Wallet
+                                </button>
+
+                            </form>
+
+
+                            <div id="fundWalletResult"></div>
+
+                        </section>
+
+
+                        <!-- ========================================
+                             AIRTIME
+                        ========================================= -->
+
+                        <section
+                            class="dashboard-card"
+                            id="airtimeSection"
+                        >
+
+                            <div class="section-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        AIRTIME
+                                    </p>
+
+                                    <h2>
+                                        Airtime Purchase
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <form id="airtimeForm">
+
+
+                                <div class="form-group">
+
+                                    <label for="network">
+                                        Network
+                                    </label>
+
+                                    <select
+                                        id="network"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Select network
+                                        </option>
+
+                                        <option value="mtn">
+                                            MTN
+                                        </option>
+
+                                        <option value="airtel">
+                                            Airtel
+                                        </option>
+
+                                        <option value="glo">
+                                            Glo
+                                        </option>
+
+                                        <option value="etisalat">
+                                            9mobile
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="airtimePhone">
+                                        Phone Number
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        id="airtimePhone"
+                                        placeholder="08012345678"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="airtimeAmount">
+                                        Amount
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="airtimeAmount"
+                                        min="50"
+                                        placeholder="Enter amount"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    id="buyAirtimeBtn"
+                                    class="primary-btn"
+                                >
+                                    Buy Airtime
+                                </button>
+
+                            </form>
+
+
+                            <div id="airtimeResult"></div>
+
+                        </section>
+
+
+                        <!-- ========================================
+                             BUSINESS PROFILE
+                        ========================================= -->
+
+                        <section
+                            class="dashboard-card"
+                            id="businessProfileSection"
+                        >
+
+                            <div class="section-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        BUSINESS PROFILE
+                                    </p>
+
+                                    <h2>
+                                        Business Information
+                                    </h2>
+
+                                    <p>
+                                        Keep your vendor business
+                                        information up to date.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <form id="vendorProfileForm">
+
+
+                                <div class="form-group">
+
+                                    <label for="businessName">
+                                        Business Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="businessName"
+                                        placeholder="Enter business name"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="businessPhone">
+                                        Business Phone
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        id="businessPhone"
+                                        placeholder="08012345678"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="businessAddress">
+                                        Business Address
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="businessAddress"
+                                        placeholder="Enter business address"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="businessDescription">
+                                        Business Description
+                                    </label>
+
+                                    <textarea
+                                        id="businessDescription"
+                                        rows="4"
+                                        placeholder="Tell customers about your business"
+                                    ></textarea>
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    id="saveVendorProfileBtn"
+                                    class="primary-btn"
+                                >
+                                    Save Business Profile
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="vendorProfileResult"
+                                aria-live="polite"
+                            ></div>
+
+                        </section>
+
+
+                        <!-- ========================================
+                             CUSTOMER MANAGEMENT
+                        ========================================= -->
+
+                        <section class="dashboard-card">
+
+                            <div class="section-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        CUSTOMERS
+                                    </p>
+
+                                    <h2>
+                                        Customer Management
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="coming-soon">
+
+                                <h3>
+                                    Customer Management
+                                </h3>
+
+                                <p>
+                                    Vendor customer records,
+                                    customer accounts and
+                                    customer activity will appear
+                                    here.
+                                </p>
+
+                                <span>
+                                    Coming Soon
+                                </span>
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- ========================================
+                             TRANSACTIONS
+                        ========================================= -->
+
+                        <section
+                            class="dashboard-card"
+                            id="transactionSection"
+                        >
+
+                            <div class="section-heading">
+
+                                <div>
+
+                                    <p class="eyebrow">
+                                        RECORDS
+                                    </p>
+
+                                    <h2>
+                                        Recent Transactions
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div id="transactionHistory">
+
+                                <p>
+                                    Loading transactions...
+                                </p>
+
+                            </div>
+
+                        </section>
+
+
+                    </section>
+
+
+                    <!-- ========================================
+                         SIDEBAR
+                    ========================================= -->
+
+                    <aside class="dashboard-sidebar">
+
+
+                        <!-- ACCOUNT -->
+
+                        <div class="sidebar-card account-card">
+
+                            <div class="account-avatar">
+
+                                <span id="accountInitial">
+                                    V
+                                </span>
+
+                            </div>
+
+
+                            <p class="eyebrow">
+                                VENDOR ACCOUNT
+                            </p>
+
+                            <h3 id="userName">
+                                Vendor
+                            </h3>
+
+                            <p id="userEmail">
+                                Not available
+                            </p>
+
+                            <p id="userPhone">
+                                Not available
+                            </p>
+
+                        </div>
+
+
+                        <!-- BUSINESS STATUS -->
+
+                        <div class="sidebar-card">
+
+                            <p class="eyebrow">
+                                BUSINESS STATUS
+                            </p>
+
+                            <h3 id="vendorApprovalStatus">
+                                Pending Approval
+                            </h3>
+
+                            <p id="vendorApprovalMessage">
+                                Your vendor account is awaiting
+                                approval.
+                            </p>
+
+                        </div>
+
+
+                        <!-- BUSINESS PROFILE -->
+
+                        <div class="sidebar-card">
+
+                            <p class="eyebrow">
+                                BUSINESS PROFILE
+                            </p>
+
+                            <h3 id="sidebarBusinessName">
+                                Vendor Business
+                            </h3>
+
+                            <p id="sidebarBusinessAddress">
+                                Business address not available.
+                            </p>
+
+                            <a
+                                href="#businessProfileSection"
+                                class="secondary-btn"
+                            >
+                                Manage Profile
+                            </a>
+
+                        </div>
+
+
+                        <!-- WALLET -->
+
+                        <div class="sidebar-card">
+
+                            <p class="eyebrow">
+                                WALLET
+                            </p>
+
+                            <h3 id="sidebarWalletBalance">
+                                ₦0.00
+                            </h3>
+
+                            <p>
+                                Available vendor balance.
+                            </p>
+
+                        </div>
+
+
+                        <!-- SUPPORT -->
+
+                        <div class="sidebar-card">
+
+                            <p class="eyebrow">
+                                SUPPORT
+                            </p>
+
+                            <h3>
+                                Need Help?
+                            </h3>
+
+                            <p>
+                                Contact Benue Data Hub support
+                                for account or transaction
+                                assistance.
+                            </p>
+
+                            <a
+                                href="mailto:gbilasystemsitsolution@gmail.com"
+                                class="secondary-btn"
+                            >
+                                Contact Support
+                            </a>
+
+                        </div>
+
+
+                    </aside>
+
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- ========================================
+             FOOTER
+        ========================================= -->
+
+        <footer class="footer">
+
+            <div class="footer-bottom">
+
+                <p>
+                    © 2026 Benue Data Hub.
+                    All rights reserved.
+                </p>
+
+            </div>
+
+        </footer>
+
+
+    </div>
+
+
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>
