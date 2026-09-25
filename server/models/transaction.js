@@ -18,6 +18,11 @@ const transactionSchema = new mongoose.Schema(
             required: true
         },
 
+        variationCode: {
+            type: String,
+            default: null
+        },
+
         phone: {
             type: String,
             required: true
@@ -40,20 +45,20 @@ const transactionSchema = new mongoose.Schema(
         },
 
         status: {
-    type: String,
-    enum: ["pending", "successful", "failed"],
-    default: "pending"
-},
+            type: String,
+            enum: ["pending", "successful", "failed"],
+            default: "pending"
+        },
 
-walletDebited: {
-    type: Boolean,
-    default: false
-},
+        walletDebited: {
+            type: Boolean,
+            default: false
+        },
 
-walletRefunded: {
-    type: Boolean,
-    default: false
-}
+        walletRefunded: {
+            type: Boolean,
+            default: false
+        }
     },
     {
         timestamps: true

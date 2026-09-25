@@ -2,23 +2,32 @@ const axios = require("axios");
 
 const VTPASS_BASE_URL = "https://sandbox.vtpass.com/api";
 
+const getHeaders = () => ({
+    "api-key": process.env.VTPASS_API_KEY,
+    "public-key": process.env.VTPASS_PUBLIC_KEY,
+    "Content-Type": "application/json"
+});
+
+const getPostHeaders = () => ({
+    "api-key": process.env.VTPASS_API_KEY,
+    "secret-key": process.env.VTPASS_SECRET_KEY,
+    "Content-Type": "application/json"
+});
+
 const getServiceCategories = async () => {
     try {
         const response = await axios.get(
             `${VTPASS_BASE_URL}/service-categories`,
             {
-                headers: {
-                    "api-key": process.env.VTPASS_API_KEY,
-                    "public-key": process.env.VTPASS_PUBLIC_KEY,
-                    "Content-Type": "application/json"
-                }
+                headers: getHeaders()
             }
         );
 
         return response.data;
+
     } catch (error) {
         console.error(
-            "VTpass error:",
+            "VTpass service categories error:",
             error.response?.data || error.message
         );
 
@@ -31,11 +40,7 @@ const getAirtimeServices = async () => {
         const response = await axios.get(
             `${VTPASS_BASE_URL}/services?identifier=airtime`,
             {
-                headers: {
-                    "api-key": process.env.VTPASS_API_KEY,
-                    "public-key": process.env.VTPASS_PUBLIC_KEY,
-                    "Content-Type": "application/json"
-                }
+                headers: getHeaders()
             }
         );
 
@@ -45,6 +50,7 @@ const getAirtimeServices = async () => {
         );
 
         return response.data;
+
     } catch (error) {
         console.error(
             "VTpass airtime services error:",
@@ -55,7 +61,41 @@ const getAirtimeServices = async () => {
     }
 };
 
-const purchaseAirtime = async (serviceID, amount, phone, request_id) => {
+const getDataVariations = async (serviceID) => {
+    try {
+        const response = await axios.get(
+            `${VTPASS_BASE_URL}/service-variations`,
+            {
+                params: {
+                    serviceID
+                },
+                headers: getHeaders()
+            }
+        );
+
+        console.log(
+            `VTPASS DATA VARIATIONS [${serviceID}]:`,
+            JSON.stringify(response.data, null, 2)
+        );
+
+        return response.data;
+
+    } catch (error) {
+        console.error(
+            "VTpass data variations error:",
+            error.response?.data || error.message
+        );
+
+        throw error;
+    }
+};
+
+const purchaseAirtime = async (
+    serviceID,
+    amount,
+    phone,
+    request_id
+) => {
     try {
         const response = await axios.post(
             `${VTPASS_BASE_URL}/pay`,
@@ -66,20 +106,17 @@ const purchaseAirtime = async (serviceID, amount, phone, request_id) => {
                 phone
             },
             {
-                headers: {
-                    "api-key": process.env.VTPASS_API_KEY,
-                    "secret-key": process.env.VTPASS_SECRET_KEY,
-                    "Content-Type": "application/json"
-                }
+                headers: getPostHeaders()
             }
         );
 
         console.log(
-            "VTPASS PURCHASE RESPONSE:",
+            "VTPASS AIRTIME PURCHASE RESPONSE:",
             JSON.stringify(response.data, null, 2)
         );
 
         return response.data;
+
     } catch (error) {
         console.error(
             "VTpass airtime purchase error:",
@@ -90,8 +127,52 @@ const purchaseAirtime = async (serviceID, amount, phone, request_id) => {
     }
 };
 
+const purchaseData = async (
+    serviceID,
+    variation_code,
+    amount,
+    phone,
+    request_id
+) => {
+    try {
+        const payload = {
+            request_id,
+            serviceID,
+            billersCode: phone,
+            variation_code,
+            amount,
+            phone
+        };
+
+        const response = await axios.post(
+            `${VTPASS_BASE_URL}/pay`,
+            payload,
+            {
+                headers: getPostHeaders()
+            }
+        );
+
+        console.log(
+            "VTPASS DATA PURCHASE RESPONSE:",
+            JSON.stringify(response.data, null, 2)
+        );
+
+        return response.data;
+
+    } catch (error) {
+        console.error(
+            "VTpass data purchase error:",
+            error.response?.data || error.message
+        );
+
+        throw error;
+    }
+};
+
 module.exports = {
     getServiceCategories,
     getAirtimeServices,
-    purchaseAirtime
+    getDataVariations,
+    purchaseAirtime,
+    purchaseData
 };

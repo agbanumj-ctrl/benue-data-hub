@@ -14,8 +14,16 @@ const PORT = process.env.PORT || 3001;
 // ========================================
 
 console.log("MongoDB URL loaded:", !!process.env.MONGODB_URI);
-console.log("PAYSTACK Secret Key loaded:", !!process.env.PAYSTACK_SECRET_KEY);
-console.log("PAYSTACK Public Key loaded:", !!process.env.PAYSTACK_PUBLIC_KEY);
+
+console.log(
+    "PAYSTACK Secret Key loaded:",
+    !!process.env.PAYSTACK_SECRET_KEY
+);
+
+console.log(
+    "PAYSTACK Public Key loaded:",
+    !!process.env.PAYSTACK_PUBLIC_KEY
+);
 
 
 // ========================================
@@ -24,11 +32,23 @@ console.log("PAYSTACK Public Key loaded:", !!process.env.PAYSTACK_PUBLIC_KEY);
 
 app.use(express.json());
 
-app.use(cors({
-    origin: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(
+    cors({
+        origin: true,
+        methods: [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "OPTIONS"
+        ],
+        allowedHeaders: [
+            "Content-Type",
+            "Authorization"
+        ]
+    })
+);
 
 
 // ========================================
@@ -45,7 +65,11 @@ app.use((req, res, next) => {
 // FRONTEND
 // ========================================
 
-app.use(express.static(path.join(__dirname, "frontend")));
+app.use(
+    express.static(
+        path.join(__dirname, "frontend")
+    )
+);
 
 
 // ========================================
@@ -54,7 +78,10 @@ app.use(express.static(path.join(__dirname, "frontend")));
 
 const authRoutes = require("./server/routes/authRoutes");
 
-app.use("/api/auth", authRoutes);
+app.use(
+    "/api/auth",
+    authRoutes
+);
 
 
 // ========================================
@@ -63,7 +90,10 @@ app.use("/api/auth", authRoutes);
 
 const vtpassRoutes = require("./server/routes/vtpassRoutes");
 
-app.use("/api/vtpass", vtpassRoutes);
+app.use(
+    "/api/vtpass",
+    vtpassRoutes
+);
 
 
 // ========================================
@@ -72,14 +102,47 @@ app.use("/api/vtpass", vtpassRoutes);
 
 const transactionRoutes = require("./server/routes/transactionRoutes");
 
-app.use("/api/transactions", transactionRoutes);
+app.use(
+    "/api/transactions",
+    transactionRoutes
+);
+
+
 // ========================================
 // WALLET ROUTES
 // ========================================
 
 const walletRoutes = require("./server/routes/walletRoutes");
 
-app.use("/api/wallet", walletRoutes);
+app.use(
+    "/api/wallet",
+    walletRoutes
+);
+
+
+// ========================================
+// VENDOR ROUTES
+// ========================================
+
+const vendorRoutes = require("./server/routes/vendorRoutes");
+
+app.use(
+    "/api/vendor",
+    vendorRoutes
+);
+
+
+// ========================================
+// ADMIN ROUTES
+// ========================================
+
+const adminRoutes = require("./server/routes/adminRoutes");
+
+app.use(
+    "/api/admin",
+    adminRoutes
+);
+
 
 // ========================================
 // DIRECT POST TEST ROUTE
@@ -94,11 +157,59 @@ app.post("/test", (req, res) => {
 
 
 // ========================================
+// HEALTH CHECK
+// ========================================
+
+app.get("/api/health", (req, res) => {
+    res.json({
+        success: true,
+        message: "Benue Data Hub API is running.",
+        timestamp: new Date().toISOString()
+    });
+});
+
+
+// ========================================
 // HOME ROUTE
 // ========================================
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend", "index.html"));
+    res.sendFile(
+        path.join(
+            __dirname,
+            "frontend",
+            "index.html"
+        )
+    );
+});
+
+
+// ========================================
+// 404 API HANDLER
+// ========================================
+
+app.use("/api", (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "API route not found."
+    });
+});
+
+
+// ========================================
+// GLOBAL ERROR HANDLER
+// ========================================
+
+app.use((error, req, res, next) => {
+    console.error(
+        "SERVER ERROR:",
+        error
+    );
+
+    res.status(500).json({
+        success: false,
+        message: "Internal server error."
+    });
 });
 
 
@@ -109,10 +220,15 @@ app.get("/", (req, res) => {
 mongoose
     .connect(process.env.MONGODB_URI)
     .then(() => {
-        console.log("MongoDB connected successfully!");
+        console.log(
+            "MongoDB connected successfully!"
+        );
     })
     .catch((error) => {
-        console.error("MongoDB connection failed:", error.message);
+        console.error(
+            "MongoDB connection failed:",
+            error.message
+        );
     });
 
 
@@ -121,5 +237,7 @@ mongoose
 // ========================================
 
 app.listen(PORT, () => {
-    console.log(`Benue Data Hub server running on port ${PORT}`);
+    console.log(
+        `Benue Data Hub server running on port ${PORT}`
+    );
 });

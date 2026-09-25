@@ -180,34 +180,152 @@
                                 </a>
 
 
-                                <!-- DATA SERVICE -->
-                                <a
-                                    href="#dataSection"
-                                    class="service-card"
-                                >
+                                <!-- DATA -->
+<div
+    class="dashboard-card dashboard-section-block"
+    id="dataSection"
+>
 
-                                    <div class="service-icon">
-                                        📶
-                                    </div>
+    <div class="card-heading">
 
-                                    <div>
+        <div>
 
-                                        <h3>
-                                            Buy Data
-                                        </h3>
+            <p class="eyebrow">
+                DATA
+            </p>
 
-                                        <p>
-                                            Get data plans for your devices.
-                                        </p>
+            <h2>
+                Buy Data
+            </h2>
 
-                                    </div>
+        </div>
 
-                                    <span class="service-arrow">
-                                        →
-                                    </span>
+        <span class="status-badge">
+            Available
+        </span>
 
-                                </a>
+    </div>
 
+    <p class="card-description">
+        Choose your network and data plan, then pay securely
+        from your Benue Data Hub wallet.
+    </p>
+
+
+    <form id="dataForm">
+
+
+        <div class="form-group">
+
+            <label for="dataNetwork">
+                Network
+            </label>
+
+            <select
+                id="dataNetwork"
+                required
+            >
+
+                <option value="">
+                    Select Network
+                </option>
+
+                <option value="mtn-data">
+                    MTN
+                </option>
+
+                <option value="airtel-data">
+                    Airtel
+                </option>
+
+                <option value="glo-data">
+                    Glo
+                </option>
+
+                <option value="9mobile-data">
+                    9mobile
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="dataPlan">
+                Data Plan
+            </label>
+
+            <select
+                id="dataPlan"
+                required
+                disabled
+            >
+
+                <option value="">
+                    Select network first
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="dataPhone">
+                Phone Number
+            </label>
+
+            <input
+                type="tel"
+                id="dataPhone"
+                placeholder="08012345678"
+                inputmode="numeric"
+                autocomplete="tel"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="dataAmount">
+                Amount (₦)
+            </label>
+
+            <input
+                type="number"
+                id="dataAmount"
+                placeholder="Select a data plan"
+                min="1"
+                step="1"
+                readonly
+                required
+            >
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="primary-btn auth-btn"
+            id="buyDataBtn"
+        >
+            Buy Data
+        </button>
+
+    </form>
+
+
+    <div
+        id="dataResult"
+        aria-live="polite"
+    ></div>
+
+</div>
 
                                 <!-- TRANSACTIONS -->
                                 <a

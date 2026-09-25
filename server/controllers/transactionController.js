@@ -1,10 +1,20 @@
-const Transaction = require("../models/transaction");
 const User = require("../models/user");
-const WalletTransaction = require("../models/walletTransaction");
-const { purchaseAirtime } = require("../services/vtpassservice");
+const Transaction = require("../models/transaction");
+const {
+    purchaseAirtime
+} = require("../services/vtpassservice");
+
+
+// ========================================
+// CREATE AIRTIME TRANSACTION
+// ========================================
 
 const createTransaction = async (req, res) => {
+
+    let transaction = null;
+
     try {
+
         const {
             service,
             serviceID,
@@ -13,31 +23,48 @@ const createTransaction = async (req, res) => {
             requestId
         } = req.body;
 
-        const purchaseAmount = Number(amount);
 
         // ========================================
-        // 1. VALIDATE TRANSACTION DATA
+        // VALIDATION
         // ========================================
 
         if (
             !service ||
             !serviceID ||
             !phone ||
-            !requestId ||
+            !amount ||
+            !requestId
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Service, serviceID, phone, amount and requestId are required."
+            });
+        }
+
+
+        const purchaseAmount =
+            Number(amount);
+
+
+        if (
             !Number.isFinite(purchaseAmount) ||
             purchaseAmount <= 0
         ) {
             return res.status(400).json({
                 success: false,
-                message: "All transaction fields are required."
+                message: "Invalid transaction amount."
             });
         }
 
+
         // ========================================
-        // 2. CHECK USER
+        // FIND USER
         // ========================================
 
-        const user = await User.findById(req.user.id);
+        const user =
+            await User.findById(req.user.id);
+
 
         if (!user) {
             return res.status(404).json({
@@ -46,227 +73,366 @@ const createTransaction = async (req, res) => {
             });
         }
 
+
+        if (!user.isActive) {
+            return res.status(403).json({
+                success: false,
+                message: "Your account is inactive."
+            });
+        }
+
+
         // ========================================
-        // 3. CHECK FOR DUPLICATE REQUEST
+        // CHECK DUPLICATE REQUEST
         // ========================================
 
         const existingTransaction =
             await Transaction.findOne({
-                requestId: requestId
+                requestId
             });
 
+
         if (existingTransaction) {
+
             return res.status(409).json({
                 success: false,
-                message: "This transaction request has already been processed.",
-                data: existingTransaction
+                message:
+                    "This transaction request has already been processed.",
+                transaction:
+                    existingTransaction,
+                walletBalance:
+                    user.walletBalance
             });
         }
 
+
         // ========================================
-        // 4. CHECK WALLET BALANCE
+        // CHECK WALLET BALANCE
         // ========================================
 
-        const currentBalance = Number(user.walletBalance);
+        if (
+            Number(user.walletBalance) <
+            purchaseAmount
+        ) {
 
-        if (currentBalance < purchaseAmount) {
             return res.status(400).json({
                 success: false,
                 message: "Insufficient wallet balance.",
-                walletBalance: currentBalance,
-                requiredAmount: purchaseAmount
+                walletBalance:
+                    user.walletBalance
             });
         }
 
-        // ========================================
-        // 5. DEBIT WALLET
-        // ========================================
-
-        user.walletBalance =
-            currentBalance - purchaseAmount;
-
-        await user.save();
 
         // ========================================
-        // 6. RECORD WALLET DEBIT
+        // ATOMIC WALLET DEBIT
         // ========================================
 
-        const walletDebitReference =
-            "BDH-DEBIT-" +
-            Date.now() +
-            "-" +
-            requestId;
+        const updatedUser =
+            await User.findOneAndUpdate(
+                {
+                    _id: req.user.id,
+                    walletBalance: {
+                        $gte: purchaseAmount
+                    }
+                },
+                {
+                    $inc: {
+                        walletBalance:
+                            -purchaseAmount
+                    }
+                },
+                {
+                    new: true
+                }
+            );
 
-        const walletDebit =
-            await WalletTransaction.create({
-                user: user._id,
-                type: "debit",
-                amount: purchaseAmount,
-                reference: walletDebitReference,
-                description:
-                    "Airtime purchase - " +
-                    serviceID +
-                    " - " +
-                    phone,
-                status: "successful"
+
+        if (!updatedUser) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Unable to debit wallet. Please try again."
             });
+        }
+
 
         // ========================================
-        // 7. CREATE AIRTIME TRANSACTION
+        // CREATE PENDING TRANSACTION
         // ========================================
 
-        const transaction = await Transaction.create({
-            user: user._id,
-            service,
-            serviceID,
-            phone,
-            amount: purchaseAmount,
-            requestId,
-            status: "pending"
-        });
+        try {
+
+            transaction =
+                await Transaction.create({
+                    user: req.user.id,
+
+                    service,
+
+                    serviceID,
+
+                    phone,
+
+                    amount:
+                        purchaseAmount,
+
+                    requestId,
+
+                    transactionId:
+                        null,
+
+                    status:
+                        "pending",
+
+                    walletDebited:
+                        true,
+
+                    walletRefunded:
+                        false
+                });
+
+        } catch (transactionError) {
+
+            // ========================================
+            // REFUND IF TRANSACTION RECORD FAILED
+            // ========================================
+
+            await User.findByIdAndUpdate(
+                req.user.id,
+                {
+                    $inc: {
+                        walletBalance:
+                            purchaseAmount
+                    }
+                }
+            );
+
+            console.error(
+                "Transaction creation error:",
+                transactionError.message
+            );
+
+            return res.status(500).json({
+                success: false,
+                message:
+                    "Unable to create transaction."
+            });
+        }
+
 
         // ========================================
-        // 8. SEND PURCHASE TO VTPASS
+        // SEND AIRTIME REQUEST TO VTPASS
         // ========================================
 
         let vtpassResponse;
 
         try {
-            vtpassResponse = await purchaseAirtime(
-                serviceID,
-                purchaseAmount,
-                phone,
-                requestId
-            );
+
+            vtpassResponse =
+                await purchaseAirtime(
+                    serviceID,
+                    purchaseAmount,
+                    phone,
+                    requestId
+                );
+
         } catch (vtpassError) {
 
             console.error(
-                "VTpass purchase error:",
+                "VTpass Airtime request error:",
                 vtpassError.response?.data ||
                 vtpassError.message
             );
 
+
             // ========================================
-            // 9. REFUND WALLET IF VTPASS FAILS
+            // UNKNOWN VTPASS RESULT
+            // KEEP TRANSACTION PENDING
             // ========================================
 
-            user.walletBalance =
-                Number(user.walletBalance) +
-                purchaseAmount;
-
-            await user.save();
-
-            await WalletTransaction.create({
-                user: user._id,
-                type: "refund",
-                amount: purchaseAmount,
-                reference:
-                    "BDH-REFUND-" +
-                    Date.now() +
-                    "-" +
-                    requestId,
-                description:
-                    "Refund for failed airtime purchase - " +
-                    requestId,
-                status: "successful"
-            });
-
-            transaction.status = "failed";
+            transaction.status =
+                "pending";
 
             await transaction.save();
 
-            return res.status(502).json({
+
+            const currentUser =
+                await User.findById(
+                    req.user.id
+                );
+
+
+            return res.status(202).json({
                 success: false,
+                pending: true,
                 message:
-                    "Airtime purchase failed. Your wallet has been refunded.",
-                walletBalance: user.walletBalance,
-                data: transaction
+                    "Your airtime request is still being processed.",
+                transaction,
+                walletBalance:
+                    currentUser?.walletBalance ??
+                    updatedUser.walletBalance
             });
         }
 
-        // ========================================
-        // 10. GET VTPASS TRANSACTION DETAILS
-        // ========================================
 
-        const vtpassTransactionId =
-            vtpassResponse?.content?.transactions?.transactionId ||
-            vtpassResponse?.content?.transactionId ||
-            null;
+        console.log(
+            "VTPASS AIRTIME FINAL RESPONSE:",
+            JSON.stringify(
+                vtpassResponse,
+                null,
+                2
+            )
+        );
 
-        const vtpassStatus =
-            vtpassResponse?.code === "000" ||
-            vtpassResponse?.content?.transactions?.status === "delivered"
-                ? "successful"
-                : "failed";
 
         // ========================================
-        // 11. HANDLE VTPASS RESULT
+        // CHECK VTPASS RESULT
         // ========================================
 
-        transaction.transactionId =
-            vtpassTransactionId;
+        const vtpassCode =
+            String(
+                vtpassResponse?.code ||
+                ""
+            );
+
+
+        // ========================================
+        // SUCCESS
+        // ========================================
+
+        if (vtpassCode === "000") {
+
+            transaction.status =
+                "successful";
+
+
+            transaction.transactionId =
+                vtpassResponse
+                    ?.content
+                    ?.transactions
+                    ?.transactionId ||
+                vtpassResponse
+                    ?.content
+                    ?.transactions
+                    ?.transaction_id ||
+                vtpassResponse
+                    ?.content
+                    ?.transactionId ||
+                null;
+
+
+            await transaction.save();
+
+
+            const finalUser =
+                await User.findById(
+                    req.user.id
+                );
+
+
+            return res.json({
+                success: true,
+                message:
+                    "Airtime purchase successful.",
+                transaction,
+                walletBalance:
+                    finalUser?.walletBalance ??
+                    updatedUser.walletBalance
+            });
+        }
+
+
+        // ========================================
+        // CONFIRMED FAILURE
+        // REFUND CUSTOMER
+        // ========================================
 
         transaction.status =
-            vtpassStatus;
+            "failed";
+
+
+        if (
+            !transaction.walletRefunded
+        ) {
+
+            await User.findByIdAndUpdate(
+                req.user.id,
+                {
+                    $inc: {
+                        walletBalance:
+                            purchaseAmount
+                    }
+                }
+            );
+
+
+            transaction.walletRefunded =
+                true;
+        }
+
 
         await transaction.save();
 
-        // ========================================
-        // 12. REFUND IF VTPASS RETURNS FAILURE
-        // ========================================
 
-        if (vtpassStatus === "failed") {
+        const refundedUser =
+            await User.findById(
+                req.user.id
+            );
 
-            user.walletBalance =
-                Number(user.walletBalance) +
-                purchaseAmount;
 
-            await user.save();
+        return res.status(400).json({
+            success: false,
+            message:
+                vtpassResponse
+                    ?.response_description ||
+                vtpassResponse
+                    ?.message ||
+                "Airtime purchase failed.",
 
-            await WalletTransaction.create({
-                user: user._id,
-                type: "refund",
-                amount: purchaseAmount,
-                reference:
-                    "BDH-REFUND-" +
-                    Date.now() +
-                    "-" +
-                    requestId,
-                description:
-                    "Refund for failed airtime purchase - " +
-                    requestId,
-                status: "successful"
-            });
+            transaction,
 
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Airtime purchase failed. Your wallet has been refunded.",
-                walletBalance: user.walletBalance,
-                data: transaction,
-                vtpass: vtpassResponse
-            });
-        }
-
-        // ========================================
-        // 13. SUCCESSFUL PURCHASE
-        // ========================================
-
-        return res.status(200).json({
-            success: true,
-            message: "Airtime purchase successful.",
-            walletBalance: user.walletBalance,
-            data: transaction,
-            vtpass: vtpassResponse
+            walletBalance:
+                refundedUser?.walletBalance ??
+                0
         });
+
 
     } catch (error) {
 
         console.error(
-            "Transaction creation error:",
+            "Create transaction error:",
             error.response?.data ||
             error.message
         );
+
+
+        // ========================================
+        // SAFETY NET
+        // ========================================
+
+        if (
+            transaction &&
+            transaction.walletDebited &&
+            !transaction.walletRefunded
+        ) {
+
+            try {
+
+                transaction.status =
+                    "pending";
+
+                await transaction.save();
+
+            } catch (saveError) {
+
+                console.error(
+                    "Unable to save pending transaction:",
+                    saveError.message
+                );
+            }
+        }
+
 
         return res.status(500).json({
             success: false,
@@ -277,31 +443,6 @@ const createTransaction = async (req, res) => {
 };
 
 
-// ========================================
-// UPDATE TRANSACTION
-// ========================================
-
-const updateTransaction = async (
-    requestId,
-    transactionId,
-    status
-) => {
-
-    const transaction =
-        await Transaction.findOneAndUpdate(
-            { requestId },
-            {
-                transactionId,
-                status
-            },
-            { new: true }
-        );
-
-    return transaction;
-};
-
-
 module.exports = {
-    createTransaction,
-    updateTransaction
+    createTransaction
 };

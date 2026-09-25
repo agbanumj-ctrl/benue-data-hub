@@ -1357,6 +1357,522 @@ function setupAirtimePurchase() {
         }
     );
 }
+function setupDataPurchase() {
+
+    const dataForm =
+        document.getElementById("dataForm");
+
+    if (!dataForm) {
+        return;
+    }
+
+    const networkInput =
+        document.getElementById("dataNetwork");
+
+    const planInput =
+        document.getElementById("dataPlan");
+
+    const phoneInput =
+        document.getElementById("dataPhone");
+
+    const amountInput =
+        document.getElementById("dataAmount");
+
+    const buyButton =
+        document.getElementById("buyDataBtn");
+
+    const result =
+        document.getElementById("dataResult");
+
+
+    // ==========================================
+    // LOAD DATA PLANS WHEN NETWORK CHANGES
+    // ==========================================
+
+    networkInput.addEventListener(
+        "change",
+        async () => {
+
+            const serviceID =
+                networkInput.value.trim();
+
+            planInput.innerHTML =
+                '<option value="">Loading data plans...</option>';
+
+            planInput.disabled = true;
+
+            amountInput.value = "";
+
+            if (!serviceID) {
+
+                planInput.innerHTML =
+                    '<option value="">Select network first</option>';
+
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/vtpass/data-variations/${encodeURIComponent(serviceID)}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "DATA VARIATIONS RESPONSE:",
+                    data
+                );
+
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to load data plans."
+                    );
+                }
+
+
+                const variations =
+                    data.data?.content?.variations ||
+                    data.data?.variations ||
+                    [];
+
+
+                if (!Array.isArray(variations) ||
+                    variations.length === 0) {
+
+                    planInput.innerHTML =
+                        '<option value="">No data plans available</option>';
+
+                    return;
+                }
+
+
+                planInput.innerHTML =
+                    '<option value="">Select Data Plan</option>';
+
+
+                variations.forEach(
+                    (plan) => {
+
+                        const option =
+                            document.createElement("option");
+
+
+                        option.value =
+                            plan.variation_code || "";
+
+
+                        const amount =
+                            Number(
+                                plan.variation_amount
+                            );
+
+
+                        const readableAmount =
+                            Number.isFinite(amount)
+                                ? formatCurrency(amount)
+                                : "";
+
+
+                        option.textContent =
+                            plan.name
+                                ? `${plan.name}${readableAmount ? ` — ${readableAmount}` : ""}`
+                                : `${plan.variation_code}${readableAmount ? ` — ${readableAmount}` : ""}`;
+
+
+                        option.dataset.amount =
+                            Number.isFinite(amount)
+                                ? amount
+                                : "";
+
+
+                        planInput.appendChild(
+                            option
+                        );
+                    }
+                );
+
+
+                planInput.disabled =
+                    false;
+
+
+            } catch (error) {
+
+                console.error(
+                    "Data plans error:",
+                    error
+                );
+
+
+                planInput.innerHTML =
+                    '<option value="">Unable to load data plans</option>';
+
+                amountInput.value = "";
+
+
+                if (result) {
+
+                    result.innerHTML = `
+
+                        <div class="error-message">
+
+                            <p>
+                                ${escapeHTML(
+                                    error.message ||
+                                    "Unable to load data plans."
+                                )}
+                            </p>
+
+                        </div>
+                    `;
+                }
+            }
+        }
+    );
+
+
+    // ==========================================
+    // SET AMOUNT WHEN PLAN IS SELECTED
+    // ==========================================
+
+    planInput.addEventListener(
+        "change",
+        () => {
+
+            const selectedOption =
+                planInput.options[
+                    planInput.selectedIndex
+                ];
+
+
+            if (!selectedOption) {
+
+                amountInput.value = "";
+
+                return;
+            }
+
+
+            const amount =
+                Number(
+                    selectedOption.dataset.amount
+                );
+
+
+            if (
+                Number.isFinite(amount) &&
+                amount > 0
+            ) {
+
+                amountInput.value =
+                    amount;
+
+            } else {
+
+                amountInput.value = "";
+            }
+        }
+    );
+
+
+    // ==========================================
+    // BUY DATA
+    // ==========================================
+
+    dataForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const token =
+                getToken();
+
+
+            if (!token) {
+
+                alert(
+                    "Please login first."
+                );
+
+                redirectToLogin();
+
+                return;
+            }
+
+
+            const serviceID =
+                networkInput.value.trim();
+
+
+            const variationCode =
+                planInput.value.trim();
+
+
+            const phone =
+                phoneInput.value.trim();
+
+
+            const amount =
+                Number(
+                    amountInput.value
+                );
+
+
+            if (
+                !serviceID ||
+                !variationCode ||
+                !phone ||
+                !Number.isFinite(amount) ||
+                amount <= 0
+            ) {
+
+                if (result) {
+
+                    result.innerHTML = `
+
+                        <div class="error-message">
+
+                            <p>
+                                Please select a network,
+                                data plan and enter a valid
+                                phone number.
+                            </p>
+
+                        </div>
+                    `;
+                }
+
+                return;
+            }
+
+
+            const requestId =
+                generateRequestId();
+
+
+            if (buyButton) {
+
+                buyButton.disabled =
+                    true;
+
+                buyButton.textContent =
+                    "Processing...";
+            }
+
+
+            if (result) {
+
+                result.innerHTML = `
+
+                    <div>
+
+                        <p>
+                            Processing your data purchase...
+                        </p>
+
+                    </div>
+                `;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/vtpass/buy-data`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+
+                                Authorization:
+                                    `Bearer ${token}`
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    serviceID,
+                                    variation_code:
+                                        variationCode,
+                                    amount,
+                                    phone,
+                                    request_id:
+                                        requestId
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "DATA PURCHASE RESPONSE:",
+                    data
+                );
+
+
+                if (
+                    response.ok &&
+                    data.success
+                ) {
+
+                    if (result) {
+
+                        result.innerHTML = `
+
+                            <div class="success-message">
+
+                                <p>
+                                    <strong>
+                                        Data purchase successful!
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Network:
+                                    ${escapeHTML(
+                                        serviceID
+                                            .replace("-data", "")
+                                            .toUpperCase()
+                                    )}
+                                </p>
+
+                                <p>
+                                    Phone:
+                                    ${escapeHTML(phone)}
+                                </p>
+
+                                <p>
+                                    Amount:
+                                    ${formatCurrency(amount)}
+                                </p>
+
+                                <p>
+                                    Transaction ID:
+                                    ${escapeHTML(
+                                        data.transaction
+                                            ?.transactionId ||
+                                        data.data
+                                            ?.content
+                                            ?.transactions
+                                            ?.transactionId ||
+                                        "Processing"
+                                    )}
+                                </p>
+
+                            </div>
+                        `;
+                    }
+
+
+                    dataForm.reset();
+
+                    planInput.innerHTML =
+                        '<option value="">Select network first</option>';
+
+                    planInput.disabled =
+                        true;
+
+                    amountInput.value = "";
+
+
+                    if (
+                        data.walletBalance !==
+                        undefined
+                    ) {
+
+                        updateWalletDisplay(
+                            data.walletBalance
+                        );
+
+                        saveWalletBalance(
+                            data.walletBalance
+                        );
+                    }
+
+
+                    await loadTransactionHistory();
+
+
+                } else {
+
+                    if (result) {
+
+                        result.innerHTML = `
+
+                            <div class="error-message">
+
+                                <p>
+                                    <strong>
+                                        Data purchase failed.
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    ${escapeHTML(
+                                        data.message ||
+                                        "Transaction failed."
+                                    )}
+                                </p>
+
+                            </div>
+                        `;
+                    }
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Data purchase error:",
+                    error
+                );
+
+
+                if (result) {
+
+                    result.innerHTML = `
+
+                        <p class="error-message">
+                            Unable to connect to
+                            Benue Data Hub server.
+                        </p>
+                    `;
+                }
+
+
+            } finally {
+
+                if (buyButton) {
+
+                    buyButton.disabled =
+                        false;
+
+                    buyButton.textContent =
+                        "Buy Data";
+                }
+            }
+        }
+    );
+}
 
 
 // =========================================================
@@ -2875,7 +3391,7 @@ document.addEventListener(
 
         setupAirtimePurchase();
 
-
+        setupDataPurchase();
         // -----------------------------------------
         // CUSTOMER DASHBOARD
         // -----------------------------------------
