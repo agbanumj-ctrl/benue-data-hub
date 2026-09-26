@@ -188,46 +188,41 @@ function saveWalletBalance(balance) {
 
 function generateRequestId() {
 
-    const now =
-        new Date();
+    const now = new Date();
 
-    const lagosTime =
-        new Intl.DateTimeFormat(
-            "en-GB",
-            {
-                timeZone: "Africa/Lagos",
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                hourCycle: "h23"
-            }
-        ).formatToParts(now);
+    const lagosTime = new Intl.DateTimeFormat(
+        "en-GB",
+        {
+            timeZone: "Africa/Lagos",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hourCycle: "h23"
+        }
+    ).formatToParts(now);
 
     const getPart = (type) => {
 
-        const part =
-            lagosTime.find(
-                item =>
-                    item.type === type
-            );
+        const part = lagosTime.find(
+            item => item.type === type
+        );
 
-        return part
-            ? part.value
-            : "";
+        return part ? part.value : "";
     };
 
-    return (
+    const timestamp =
         getPart("year") +
         getPart("month") +
         getPart("day") +
         getPart("hour") +
-        getPart("minute") +
-        Math.random()
-            .toString(36)
-            .substring(2, 10)
-    );
+        getPart("minute");
+
+    const uniquePart =
+        Date.now().toString().slice(-6);
+
+    return `BDH${timestamp}${uniquePart}`;
 }
 
 
