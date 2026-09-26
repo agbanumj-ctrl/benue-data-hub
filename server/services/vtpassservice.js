@@ -14,6 +14,11 @@ const getPostHeaders = () => ({
     "Content-Type": "application/json"
 });
 
+
+// ======================================================
+// SERVICE CATEGORIES
+// ======================================================
+
 const getServiceCategories = async () => {
     try {
         const response = await axios.get(
@@ -34,6 +39,11 @@ const getServiceCategories = async () => {
         throw error;
     }
 };
+
+
+// ======================================================
+// AIRTIME SERVICES
+// ======================================================
 
 const getAirtimeServices = async () => {
     try {
@@ -60,6 +70,11 @@ const getAirtimeServices = async () => {
         throw error;
     }
 };
+
+
+// ======================================================
+// DATA VARIATIONS
+// ======================================================
 
 const getDataVariations = async (serviceID) => {
     try {
@@ -89,6 +104,11 @@ const getDataVariations = async (serviceID) => {
         throw error;
     }
 };
+
+
+// ======================================================
+// BUY AIRTIME
+// ======================================================
 
 const purchaseAirtime = async (
     serviceID,
@@ -126,6 +146,11 @@ const purchaseAirtime = async (
         throw error;
     }
 };
+
+
+// ======================================================
+// BUY DATA
+// ======================================================
 
 const purchaseData = async (
     serviceID,
@@ -169,10 +194,50 @@ const purchaseData = async (
     }
 };
 
+
+// ======================================================
+// REQUERY TRANSACTION
+// ======================================================
+
+const requeryTransaction = async (request_id) => {
+    try {
+        const response = await axios.post(
+            `${VTPASS_BASE_URL}/requery`,
+            {
+                request_id
+            },
+            {
+                headers: getPostHeaders()
+            }
+        );
+
+        console.log(
+            "VTPASS REQUERY RESPONSE:",
+            JSON.stringify(response.data, null, 2)
+        );
+
+        return response.data;
+
+    } catch (error) {
+        console.error(
+            "VTpass transaction requery error:",
+            error.response?.data || error.message
+        );
+
+        throw error;
+    }
+};
+
+
+// ======================================================
+// EXPORTS
+// ======================================================
+
 module.exports = {
     getServiceCategories,
     getAirtimeServices,
     getDataVariations,
     purchaseAirtime,
-    purchaseData
+    purchaseData,
+    requeryTransaction
 };

@@ -7,7 +7,8 @@ const {
     getAirtimeServices,
     getDataVariations,
     purchaseAirtime,
-    purchaseData
+    purchaseData,
+    requeryTransaction
 } = require("../services/vtpassservice");
 
 const User = require("../models/user");
@@ -112,6 +113,7 @@ router.get("/data-variations/:serviceID", async (req, res) => {
 
 router.post("/buy-airtime", authMiddleware, async (req, res) => {
     try {
+
         const {
             serviceID,
             amount,
@@ -121,6 +123,7 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
 
         const purchaseAmount = Number(amount);
 
+        // Validate request
         if (
             !serviceID ||
             !Number.isFinite(purchaseAmount) ||
@@ -135,6 +138,8 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
             });
         }
 
+
+        // Prevent duplicate requests
         const existingTransaction = await Transaction.findOne({
             requestId: request_id
         });
@@ -142,11 +147,14 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
         if (existingTransaction) {
             return res.status(409).json({
                 success: false,
-                message: "This transaction request has already been processed.",
+                message:
+                    "This transaction request has already been processed.",
                 transaction: existingTransaction
             });
         }
 
+
+        // Atomically debit wallet
         const user = await User.findOneAndUpdate(
             {
                 _id: req.user.id,
@@ -171,9 +179,12 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
             });
         }
 
+
+        // Create pending transaction
         let transaction;
 
         try {
+
             transaction = await Transaction.create({
                 user: req.user.id,
                 service: "airtime",
@@ -188,6 +199,7 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
 
         } catch (transactionError) {
 
+            // Refund wallet if transaction creation fails
             await User.findByIdAndUpdate(
                 req.user.id,
                 {
@@ -200,9 +212,12 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
             throw transactionError;
         }
 
+
+        // Send purchase to VTpass
         let data;
 
         try {
+
             data = await purchaseAirtime(
                 serviceID,
                 purchaseAmount,
@@ -217,20 +232,119 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
                 vtpassError.response?.data || vtpassError.message
             );
 
-            return res.status(202).json({
-                success: true,
-                message:
-                    "Transaction has been submitted and is awaiting confirmation.",
-                transaction
-            });
+
+            // ==================================================
+            // REQUERY VTpass
+            // ==================================================
+
+            try {
+
+                const requeryData =
+                    await requeryTransaction(request_id);
+
+                const requeryTransactionData =
+                    requeryData.content?.transactions;
+
+
+                transaction.transactionId =
+                    requeryTransactionData?.transactionId || null;
+
+
+                // Requery says successful
+                if (requeryData.code === "000") {
+
+                    transaction.status = "successful";
+
+                    await transaction.save();
+
+                    return res.status(200).json({
+                        success: true,
+                        message:
+                            "Airtime transaction successful after requery.",
+                        data: requeryData,
+                        transaction,
+                        walletBalance: user.walletBalance
+                    });
+                }
+
+
+                // Requery confirms failure
+                transaction.status = "failed";
+
+
+                if (!transaction.walletRefunded) {
+
+                    await User.findByIdAndUpdate(
+                        req.user.id,
+                        {
+                            $inc: {
+                                walletBalance: purchaseAmount
+                            }
+                        }
+                    );
+
+                    transaction.walletRefunded = true;
+                }
+
+
+                await transaction.save();
+
+
+                const updatedUser =
+                    await User.findById(req.user.id)
+                        .select("walletBalance");
+
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Airtime transaction failed after verification. Your wallet has been refunded.",
+                    data: requeryData,
+                    transaction,
+                    walletBalance:
+                        updatedUser.walletBalance
+                });
+
+
+            } catch (requeryError) {
+
+                console.error(
+                    "VTpass airtime requery error:",
+                    requeryError.response?.data ||
+                    requeryError.message
+                );
+
+
+                // We cannot safely refund because
+                // VTpass result is still uncertain.
+                transaction.status = "pending";
+
+                await transaction.save();
+
+
+                return res.status(202).json({
+                    success: true,
+                    message:
+                        "Transaction submitted. Confirmation is still pending.",
+                    transaction
+                });
+            }
         }
+
+
+        // ==================================================
+        // PROCESS NORMAL VTpass RESPONSE
+        // ==================================================
 
         const vtpassTransaction =
             data.content?.transactions;
 
+
         transaction.transactionId =
             vtpassTransaction?.transactionId || null;
 
+
+        // Successful transaction
         if (data.code === "000") {
 
             transaction.status = "successful";
@@ -239,15 +353,21 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
 
             return res.status(200).json({
                 success: true,
-                message: "Airtime transaction successful.",
+                message:
+                    "Airtime transaction successful.",
                 data,
                 transaction,
-                walletBalance: user.walletBalance
+                walletBalance:
+                    user.walletBalance
             });
         }
 
+
+        // Failed transaction
         transaction.status = "failed";
 
+
+        // Refund wallet
         if (!transaction.walletRefunded) {
 
             await User.findByIdAndUpdate(
@@ -262,10 +382,14 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
             transaction.walletRefunded = true;
         }
 
+
         await transaction.save();
 
-        const updatedUser = await User.findById(req.user.id)
-            .select("walletBalance");
+
+        const updatedUser =
+            await User.findById(req.user.id)
+                .select("walletBalance");
+
 
         return res.status(400).json({
             success: false,
@@ -273,19 +397,23 @@ router.post("/buy-airtime", authMiddleware, async (req, res) => {
                 "Airtime transaction failed. Your wallet has been refunded.",
             data,
             transaction,
-            walletBalance: updatedUser.walletBalance
+            walletBalance:
+                updatedUser.walletBalance
         });
+
 
     } catch (error) {
 
         console.error(
             "VTpass airtime purchase error:",
-            error.response?.data || error.message
+            error.response?.data ||
+            error.message
         );
 
         return res.status(500).json({
             success: false,
-            message: "Unable to process airtime transaction."
+            message:
+                "Unable to process airtime transaction."
         });
     }
 });
@@ -308,6 +436,8 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
 
         const purchaseAmount = Number(amount);
 
+
+        // Validate request
         if (
             !serviceID ||
             !variation_code ||
@@ -323,10 +453,12 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
             });
         }
 
+
         // Prevent duplicate requests
-        const existingTransaction = await Transaction.findOne({
-            requestId: request_id
-        });
+        const existingTransaction =
+            await Transaction.findOne({
+                requestId: request_id
+            });
 
         if (existingTransaction) {
             return res.status(409).json({
@@ -337,7 +469,8 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
             });
         }
 
-        // Debit wallet atomically
+
+        // Atomically debit wallet
         const user = await User.findOneAndUpdate(
             {
                 _id: req.user.id,
@@ -355,12 +488,14 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
             }
         );
 
+
         if (!user) {
             return res.status(400).json({
                 success: false,
                 message: "Insufficient wallet balance."
             });
         }
+
 
         // Create pending transaction
         let transaction;
@@ -371,6 +506,7 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
                 user: req.user.id,
                 service: "data",
                 serviceID,
+                variationCode: variation_code,
                 phone,
                 amount: purchaseAmount,
                 requestId: request_id,
@@ -381,6 +517,7 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
 
         } catch (transactionError) {
 
+            // Refund wallet if transaction creation fails
             await User.findByIdAndUpdate(
                 req.user.id,
                 {
@@ -392,6 +529,7 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
 
             throw transactionError;
         }
+
 
         // Send purchase to VTpass
         let data;
@@ -410,22 +548,121 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
 
             console.error(
                 "VTpass data purchase error:",
-                vtpassError.response?.data || vtpassError.message
+                vtpassError.response?.data ||
+                vtpassError.message
             );
 
-            return res.status(202).json({
-                success: true,
-                message:
-                    "Data transaction has been submitted and is awaiting confirmation.",
-                transaction
-            });
+
+            // ==================================================
+            // REQUERY VTpass
+            // ==================================================
+
+            try {
+
+                const requeryData =
+                    await requeryTransaction(request_id);
+
+                const requeryTransactionData =
+                    requeryData.content?.transactions;
+
+
+                transaction.transactionId =
+                    requeryTransactionData?.transactionId || null;
+
+
+                // Requery says successful
+                if (requeryData.code === "000") {
+
+                    transaction.status = "successful";
+
+                    await transaction.save();
+
+                    return res.status(200).json({
+                        success: true,
+                        message:
+                            "Data purchase successful after requery.",
+                        data: requeryData,
+                        transaction,
+                        walletBalance:
+                            user.walletBalance
+                    });
+                }
+
+
+                // Requery confirms failure
+                transaction.status = "failed";
+
+
+                if (!transaction.walletRefunded) {
+
+                    await User.findByIdAndUpdate(
+                        req.user.id,
+                        {
+                            $inc: {
+                                walletBalance: purchaseAmount
+                            }
+                        }
+                    );
+
+                    transaction.walletRefunded = true;
+                }
+
+
+                await transaction.save();
+
+
+                const updatedUser =
+                    await User.findById(req.user.id)
+                        .select("walletBalance");
+
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Data transaction failed after verification. Your wallet has been refunded.",
+                    data: requeryData,
+                    transaction,
+                    walletBalance:
+                        updatedUser.walletBalance
+                });
+
+
+            } catch (requeryError) {
+
+                console.error(
+                    "VTpass data requery error:",
+                    requeryError.response?.data ||
+                    requeryError.message
+                );
+
+
+                // VTpass result is still uncertain.
+                transaction.status = "pending";
+
+                await transaction.save();
+
+
+                return res.status(202).json({
+                    success: true,
+                    message:
+                        "Transaction submitted. Confirmation is still pending.",
+                    transaction
+                });
+            }
         }
+
+
+        // ==================================================
+        // PROCESS NORMAL VTpass RESPONSE
+        // ==================================================
 
         const vtpassTransaction =
             data.content?.transactions;
 
+
         transaction.transactionId =
             vtpassTransaction?.transactionId || null;
+
 
         // Successful transaction
         if (data.code === "000") {
@@ -436,16 +673,21 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
 
             return res.status(200).json({
                 success: true,
-                message: "Data purchase successful.",
+                message:
+                    "Data purchase successful.",
                 data,
                 transaction,
-                walletBalance: user.walletBalance
+                walletBalance:
+                    user.walletBalance
             });
         }
 
-        // Failed transaction — refund wallet
+
+        // Failed transaction
         transaction.status = "failed";
 
+
+        // Refund wallet
         if (!transaction.walletRefunded) {
 
             await User.findByIdAndUpdate(
@@ -460,10 +702,14 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
             transaction.walletRefunded = true;
         }
 
+
         await transaction.save();
 
-        const updatedUser = await User.findById(req.user.id)
-            .select("walletBalance");
+
+        const updatedUser =
+            await User.findById(req.user.id)
+                .select("walletBalance");
+
 
         return res.status(400).json({
             success: false,
@@ -471,19 +717,23 @@ router.post("/buy-data", authMiddleware, async (req, res) => {
                 "Data purchase failed. Your wallet has been refunded.",
             data,
             transaction,
-            walletBalance: updatedUser.walletBalance
+            walletBalance:
+                updatedUser.walletBalance
         });
+
 
     } catch (error) {
 
         console.error(
             "VTpass data purchase error:",
-            error.response?.data || error.message
+            error.response?.data ||
+            error.message
         );
 
         return res.status(500).json({
             success: false,
-            message: "Unable to process data transaction."
+            message:
+                "Unable to process data transaction."
         });
     }
 });
