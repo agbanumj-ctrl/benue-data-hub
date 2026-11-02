@@ -6,7 +6,8 @@ const walletTransactionSchema = new mongoose.Schema(
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true
+            required: true,
+            index: true
         },
 
         type: {
@@ -19,6 +20,12 @@ const walletTransactionSchema = new mongoose.Schema(
             type: Number,
             required: true,
             min: 0
+        },
+
+        currency: {
+            type: String,
+            default: "NGN",
+            enum: ["NGN"]
         },
 
         reference: {
@@ -39,8 +46,19 @@ const walletTransactionSchema = new mongoose.Schema(
 
         status: {
             type: String,
-            enum: ["pending", "successful", "failed"],
-            default: "pending"
+            enum: [
+                "pending",
+                "successful",
+                "failed",
+                "review_required"
+            ],
+            default: "pending",
+            index: true
+        },
+
+        failureReason: {
+            type: String,
+            default: null
         }
     },
     {
